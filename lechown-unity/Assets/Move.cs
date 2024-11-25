@@ -23,8 +23,16 @@ public class Move : MonoBehaviour {
 	// Previous input
 	private KeyCode prevKey;
 
+	// Animator
+	private Animator animator;
+
+	// Compute movement based on key states
+	float moveX = 0f;
+	float moveY = 0f;
+
 	// Use this for initialization
 	void Start () {
+		animator = GetComponent<Animator>();
 		// Initial Movement Direction
 		GetComponent<Rigidbody2D>().linearVelocity = Vector2.up * speed;
 		spawnWall ();
@@ -33,25 +41,42 @@ public class Move : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		moveX = 0f;
+		moveY = 0f;
+
 		// Check for key presses
 		if (Input.GetKeyDown (upKey) && prevKey != downKey) {
 			GetComponent<Rigidbody2D>().linearVelocity = Vector2.up * speed;
 			spawnWall ();
+			moveY = 1f;
 			prevKey = upKey;
 		} else if (Input.GetKeyDown (downKey) && prevKey != upKey) {
 			GetComponent<Rigidbody2D>().linearVelocity = -Vector2.up * speed;
 			spawnWall ();
+			moveY = -1f;
 			prevKey = downKey;
 		} else if (Input.GetKeyDown (rightKey) && prevKey != leftKey) {
 			GetComponent<Rigidbody2D>().linearVelocity = Vector2.right * speed;
 			spawnWall ();
+			moveX = 1f;
 			prevKey = rightKey;
 		} else if (Input.GetKeyDown (leftKey) && prevKey != rightKey) {
 			GetComponent<Rigidbody2D>().linearVelocity = -Vector2.right * speed;
 			spawnWall ();
+			moveX = -1f;
 			prevKey = leftKey;
 		}
 
+
+		// Vector2 movement = new Vector2(moveX, moveY).normalized;
+		print(moveX);
+		print(moveY);
+
+		if (moveX != 0 || moveY != 0) {
+			animator.SetFloat("X", moveX);
+			animator.SetFloat("Y", moveY);
+		}
+		
 		fitColliderBetween (wall, lastWallEnd, transform.position);
 	}
 
