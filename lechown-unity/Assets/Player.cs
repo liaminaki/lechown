@@ -2,6 +2,13 @@
 using System.Collections;
 
 public class Player : MonoBehaviour {
+	// Lives
+	private const int MAX_LIVES = 3;
+	private int lives = MAX_LIVES;
+	[SerializeField] private GameObject[] livesUI;
+	[SerializeField] private Sprite lifeUI;
+	[SerializeField] private Sprite noLifeUI;
+
 	// Movement keys (customizable in inspector)
 	public KeyCode upKey;
 	public KeyCode downKey;
@@ -33,6 +40,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		animator = GetComponent<Animator>();
+		updateLivesUI();
 		// Initial Movement Direction
 		GetComponent<Rigidbody2D>().linearVelocity = Vector2.up * speed;
 		spawnWall ();
@@ -106,6 +114,43 @@ public class Player : MonoBehaviour {
 		if (co != wall) {
 			print ("Player lost:" + name);
 			Destroy (gameObject);
+
+			// reduceLife();
 		}
 	}
+
+
+    void updateLivesUI() {
+        // Ensure livesUI array is valid
+        if (livesUI == null || livesUI.Length != MAX_LIVES) {
+            Debug.LogError("Lives UI array is not properly set up.");
+            return;
+        }
+
+        // Update UI based on the current lives
+        for (int i = 0; i < MAX_LIVES; i++) {
+            SpriteRenderer renderer = livesUI[i].GetComponent<SpriteRenderer>();
+            if (renderer != null)
+            {
+                renderer.sprite = i < lives ? lifeUI : noLifeUI;
+            }
+            else
+            {
+                Debug.LogError($"Missing SpriteRenderer on livesUI[{i}] GameObject.");
+            }
+        }
+    }
+
+    public void reduceLife() {
+        // Reduce life and update the UI
+        if (lives > 0) {
+            lives--;
+            updateLivesUI();
+        }
+        
+		else {
+            Debug.Log("Player is already out of lives!");
+        }
+    }
+
 }
