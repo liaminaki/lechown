@@ -4,7 +4,7 @@ using System.Collections;
 public class Player : MonoBehaviour {
 	// Lives
 	private const int MAX_LIVES = 3;
-	private int lives = MAX_LIVES;
+	public int lives = MAX_LIVES;
 	[SerializeField] private GameObject[] livesUI;
 	[SerializeField] private Sprite lifeUI;
 	[SerializeField] private Sprite noLifeUI;
@@ -41,51 +41,46 @@ public class Player : MonoBehaviour {
 	void Start () {
 		animator = GetComponent<Animator>();
 		updateLivesUI();
-		// Initial Movement Direction
-		GetComponent<Rigidbody2D>().linearVelocity = Vector2.up * speed;
-		spawnWall ();
-		prevKey = upKey;
+		moveUp();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		// OnPlayerOutOfLives();
+
 		moveX = 0f;
 		moveY = 0f;
 
 		// Check for key presses
-		if (Input.GetKeyDown (upKey) && prevKey != downKey) {
-			GetComponent<Rigidbody2D>().linearVelocity = Vector2.up * speed;
-			spawnWall ();
-			moveY = 1f;
-			prevKey = upKey;
-		} else if (Input.GetKeyDown (downKey) && prevKey != upKey) {
-			GetComponent<Rigidbody2D>().linearVelocity = -Vector2.up * speed;
-			spawnWall ();
-			moveY = -1f;
-			prevKey = downKey;
-		} else if (Input.GetKeyDown (rightKey) && prevKey != leftKey) {
-			GetComponent<Rigidbody2D>().linearVelocity = Vector2.right * speed;
-			spawnWall ();
-			moveX = 1f;
-			prevKey = rightKey;
-		} else if (Input.GetKeyDown (leftKey) && prevKey != rightKey) {
-			GetComponent<Rigidbody2D>().linearVelocity = -Vector2.right * speed;
-			spawnWall ();
-			moveX = -1f;
-			prevKey = leftKey;
-		}
+		if (Input.GetKeyDown (upKey) && prevKey != downKey)
+			moveUp();
 
+		else if (Input.GetKeyDown (downKey) && prevKey != upKey)
+			moveDown();
 
-		// Vector2 movement = new Vector2(moveX, moveY).normalized;
-		print(moveX);
-		print(moveY);
+		else if (Input.GetKeyDown (rightKey) && prevKey != leftKey)
+			moveRight();
 
+		else if (Input.GetKeyDown (leftKey) && prevKey != rightKey)
+			moveLeft();
+		
+		updateAnim(moveX, moveY);
+		fitColliderBetween (wall, lastWallEnd, transform.position);
+	}
+
+	public void resetState() {
+		// Initial Movement Direction
+		moveX = 0f;
+		moveY = 0f;
+		moveUp();
+		updateAnim(moveX, moveY);
+	}
+
+	void updateAnim(float moveX, float moveY) {
 		if (moveX != 0 || moveY != 0) {
 			animator.SetFloat("X", moveX);
 			animator.SetFloat("Y", moveY);
 		}
-		
-		fitColliderBetween (wall, lastWallEnd, transform.position);
 	}
 
 	void spawnWall() {
@@ -95,6 +90,8 @@ public class Player : MonoBehaviour {
 		// Spawn a new Lightwall
 		GameObject g = (GameObject)Instantiate (wallPrefab, transform.position, Quaternion.identity);
 		wall = g.GetComponent<Collider2D>();
+
+		g.tag = "Wall";
 	}
 
 	void fitColliderBetween(Collider2D co, Vector2 a, Vector2 b) {
@@ -112,13 +109,17 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D co) {
 		if (co != wall) {
-			print ("Player lost:" + name);
-			Destroy (gameObject);
-
-			// reduceLife();
+			GameManager.Instance.handleCollision();
+			reduceLife();
 		}
 	}
 
+	    // Updates the game state (call this when a player loses all lives)
+    // public void OnPlayerOutOfLives()
+    // {	
+	// 	if (lives == 0)
+	// 		GameManager.Instance.endGame();
+    // }
 
     void updateLivesUI() {
         // Ensure livesUI array is valid
@@ -152,5 +153,37 @@ public class Player : MonoBehaviour {
             Debug.Log("Player is already out of lives!");
         }
     }
+
+	void moveUp() {
+		GetComponent<Rigidbody2D>().linearVelocity = Vector2.up * speed;
+		spawnWall ();
+		prevKey = upKey;
+
+		moveY = 1f;
+	}
+
+	void moveDown() {
+		GetComponent<Rigidbody2D>().linearVelocity = -Vector2.up * speed;
+		spawnWall ();
+		prevKey = downKey;
+
+		moveY = -1f;
+	}
+
+	void moveLeft() {
+		GetComponent<Rigidbody2D>().linearVelocity = -Vector2.right * speed;
+		spawnWall ();
+		prevKey = leftKey;
+
+		moveX = -1f;
+	}
+
+	void moveRight() {
+		GetComponent<Rigidbody2D>().linearVelocity = Vector2.right * speed;
+		spawnWall ();
+		prevKey = rightKey;
+
+		moveX = 1f;
+	}
 
 }
