@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Move : MonoBehaviour {
+public class Player : MonoBehaviour {
 	// Movement keys (customizable in inspector)
 	public KeyCode upKey;
 	public KeyCode downKey;
