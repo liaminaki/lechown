@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
 
-public class Player : MonoBehaviour {
+public class Player : NetworkBehaviour {
 	// Lives
 	private const int MAX_LIVES = 3;
 	public int lives = MAX_LIVES;
