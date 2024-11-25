@@ -67,13 +67,14 @@ public class Move : MonoBehaviour {
 	void fitColliderBetween(Collider2D co, Vector2 a, Vector2 b) {
 		// Calculate the Center Position
 		co.transform.position = a + (b - a) * 0.5f;
+		int wallScale = 2;
 
 		// Scale it (horizontally or vertically)
 		float dist = Vector2.Distance (a, b);
 		if (a.x != b.x)
-			co.transform.localScale = new Vector2 (dist + 1, 1);
+			co.transform.localScale = new Vector2 (dist + wallScale, wallScale);
 		else
-			co.transform.localScale = new Vector2 (1, dist + 1);
+			co.transform.localScale = new Vector2 (wallScale, dist + wallScale);
 	}
 
 	void OnTriggerEnter2D(Collider2D co) {
