@@ -1,16 +1,27 @@
 using UnityEngine;
+using UnityEngine.UI;
+using Unity.Netcode;
 
 public class TestinNetcodeUI : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
+    [SerializeField] private Button startHostButton;
+    [SerializeField] private Button joinGameButton;
+
+    private void Awake(){
+        startHostButton.onClick.AddListener(() => {
+            Debug.Log("Host Starting");
+            NetworkManager.Singleton.StartHost();
+            Hide();
+        });
+
+        joinGameButton.onClick.AddListener(() => {
+            Debug.Log("Joining Game");
+            NetworkManager.Singleton.StartClient();
+            Hide();
+        });
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void Hide(){
+        gameObject.SetActive(false);
     }
 }
