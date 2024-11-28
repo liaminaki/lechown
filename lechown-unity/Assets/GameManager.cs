@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 
     // Rounds
     private const int MAX_ROUNDS = 5;
-    private int currentRound = 1;
+    private int currentRound = 0;
 
     // Man 
     [SerializeField] private Player man;
@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     }
 
     void Start() {
+        startNewRound();
     }
 
     // Resets the state for a new round
@@ -50,9 +51,15 @@ public class GameManager : MonoBehaviour
         isRoundTransitioning = true; // Lock transitions
         currentRound++;
 
-        // Unlock transitions after 3-sec delay
-        StartCoroutine(threeSecdelay());
+        // Wait for Round intro screen with countdown
+        StartCoroutine(roundIntroDelay());
 
+        /*
+
+            Insert here code for
+            1. Current round Number
+            2. 3-sec countdown
+        */
         Debug.Log($"Starting Round {currentRound}");
 
         // Clear walls or any round-specific data
@@ -66,8 +73,10 @@ public class GameManager : MonoBehaviour
         StartCoroutine(UnlockRoundTransition());
     }
 
-    private IEnumerator threeSecdelay() {
+    private IEnumerator roundIntroDelay() {
         yield return new WaitForSeconds(3f);
+        pig.startMovement();
+        man.startMovement();
     }
 
     private IEnumerator UnlockRoundTransition()
@@ -77,24 +86,33 @@ public class GameManager : MonoBehaviour
     }
 
     public void handleCollision() {
-        if (pig.lives > 0 && man.lives > 0)
-            // Start the coroutine to handle the delay before starting a new round
+
+        pig.stopMovement();
+        man.stopMovement();
+        
+        if (pig.lives > 0 && man.lives > 0) {
+            // Start the coroutine to handle the delay before starting a  new round
             StartCoroutine(HandleCollisionWithDelay());
+        }
 
         else 
             endGame();
     }
 
-    // Coroutine to handle the 3-second delay before starting a new round
+    // Coroutine to handle the 2-second delay before starting a new round to show dead states
     private IEnumerator HandleCollisionWithDelay()
     {   
-        // Freeze the game by setting time scale to 0
-        Time.timeScale = 0;
+        // Delay to ensure player has switched to dead state
+        // yield return new WaitForSecondsRealtime(0.15f);
 
-        yield return new WaitForSecondsRealtime(3f); // Wait for 3 seconds
+        // // Freeze the game by setting time scale to 0
+        // Time.timeScale = 0;
 
-        // Unfreeze the game by setting time scale back to 1
-        Time.timeScale = 1f;
+        // Delay until new round
+        yield return new WaitForSecondsRealtime(2f);
+
+        // // Unfreeze the game by setting time scale back to 1
+        // Time.timeScale = 1f;
 
         startNewRound(); // Call startNewRound after the delay
     }

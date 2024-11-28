@@ -37,16 +37,24 @@ public class Player : MonoBehaviour {
 	float moveX = 0f;
 	float moveY = 0f;
 
+	// Track the last non-zero movement direction for dead state
+	private float lastMoveX = 0f;
+	private float lastMoveY = 0f;
+
+	// Track if allowed to move
+	private bool canMove = false;
+
 	// Use this for initialization
 	void Start () {
 		animator = GetComponent<Animator>();
 		updateLivesUI();
-		moveUp();
+		stopMovement();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		// OnPlayerOutOfLives();
+
+		if (!canMove) return;
 
 		moveX = 0f;
 		moveY = 0f;
@@ -64,23 +72,36 @@ public class Player : MonoBehaviour {
 		else if (Input.GetKeyDown (leftKey) && prevKey != rightKey)
 			moveLeft();
 		
-		updateAnim(moveX, moveY);
+		// Only update animator if moving
+		if (moveX != 0 || moveY != 0) {
+			updateAnim(moveX, moveY);
+		}
+
 		fitColliderBetween (wall, lastWallEnd, transform.position);
+	}
+
+	public void startMovement() {
+		canMove = true;
+		moveUp();
 	}
 
 	public void resetState() {
 		// Initial Movement Direction
 		moveX = 0f;
 		moveY = 0f;
-		moveUp();
-		updateAnim(moveX, moveY);
+		lastMoveX = 0f;
+		lastMoveY = 0f;
+		animator.SetBool("IsDead", false);
+
+		// Update play to look up without moving
+		updateAnim(moveX, 1f);
 	}
 
-	void updateAnim(float moveX, float moveY) {
-		if (moveX != 0 || moveY != 0) {
-			animator.SetFloat("X", moveX);
-			animator.SetFloat("Y", moveY);
-		}
+	void updateAnim(float _moveX, float _moveY) {
+
+		animator.SetFloat("X", _moveX);
+		animator.SetFloat("Y", _moveY);
+		
 	}
 
 	void spawnWall() {
@@ -109,12 +130,21 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D co) {
 		if (co != wall) {
+			OnPlayerDead();
 			GameManager.Instance.handleCollision();
-			reduceLife();
 		}
 	}
 
-	    // Updates the game state (call this when a player loses all lives)
+	void OnPlayerDead() {
+		animator.SetBool("IsDead", true);
+
+		updateAnim(lastMoveX, lastMoveY);
+		reduceLife();
+
+		print("Dead");
+	}
+
+	// Updates the game state (call this when a player loses all lives)
     // public void OnPlayerOutOfLives()
     // {	
 	// 	if (lives == 0)
@@ -160,6 +190,9 @@ public class Player : MonoBehaviour {
 		prevKey = upKey;
 
 		moveY = 1f;
+
+		lastMoveX = 0f;
+		lastMoveY = moveY;
 	}
 
 	void moveDown() {
@@ -168,6 +201,9 @@ public class Player : MonoBehaviour {
 		prevKey = downKey;
 
 		moveY = -1f;
+
+		lastMoveX = 0f;
+		lastMoveY = moveY;
 	}
 
 	void moveLeft() {
@@ -176,6 +212,9 @@ public class Player : MonoBehaviour {
 		prevKey = leftKey;
 
 		moveX = -1f;
+
+		lastMoveX = moveX;
+		lastMoveY = 0f;
 	}
 
 	void moveRight() {
@@ -184,6 +223,20 @@ public class Player : MonoBehaviour {
 		prevKey = rightKey;
 
 		moveX = 1f;
+		
+		lastMoveX = moveX;
+		lastMoveY = 0f;
+	}
+
+	public void stopMovement() {
+		canMove = false;
+		GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+
+		// Reset movement inputs to ensure no unintended movement
+		moveX = 0f;
+		moveY = 0f;
+		lastMoveX = 0f;
+		lastMoveY = 0f;
 	}
 
 }
