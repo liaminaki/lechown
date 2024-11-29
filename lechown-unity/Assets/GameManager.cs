@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
     // Rounds
     private const int MAX_ROUNDS = 5;
     private int currentRound = 0;
+    [SerializeField] private Sprite[] roundNumImg;
+    [SerializeField] private GameObject roundNumRef;
+    [SerializeField] private GameObject roundIntroRef;
 
     // Man 
     [SerializeField] private Player man;
@@ -34,7 +37,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
+ 
         // Optional: Keep the GameManager persistent across scenes
         DontDestroyOnLoad(gameObject);
     }
@@ -50,16 +53,14 @@ public class GameManager : MonoBehaviour
 
         isRoundTransitioning = true; // Lock transitions
         currentRound++;
+        updRoundNumRef();
 
         // Wait for Round intro screen with countdown
         StartCoroutine(roundIntroDelay());
 
-        /*
+        
+        roundIntroRef.SetActive(true);
 
-            Insert here code for
-            1. Current round Number
-            2. 3-sec countdown
-        */
         Debug.Log($"Starting Round {currentRound}");
 
         // Clear walls or any round-specific data
@@ -73,8 +74,14 @@ public class GameManager : MonoBehaviour
         StartCoroutine(UnlockRoundTransition());
     }
 
+    private void updRoundNumRef () {
+        SpriteRenderer renderer = roundNumRef.GetComponent<SpriteRenderer>();
+        renderer.sprite = roundNumImg[currentRound - 1];
+    }
+
     private IEnumerator roundIntroDelay() {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(4f);
+        roundIntroRef.SetActive(false);
         pig.startMovement();
         man.startMovement();
     }
