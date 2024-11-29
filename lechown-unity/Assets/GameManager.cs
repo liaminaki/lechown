@@ -5,24 +5,35 @@ public class GameManager : MonoBehaviour
 {   
     public static GameManager Instance { get; private set; } // Static singleton instance
 
-    // Rounds
+    [Header("Rounds")]
     private const int MAX_ROUNDS = 5;
     private int currentRound = 0;
     [SerializeField] private Sprite[] roundNumImg;
     [SerializeField] private GameObject roundNumRef;
     [SerializeField] private GameObject roundIntroRef;
-
-    // Man 
-    [SerializeField] private Player man;
-    private Vector2 manStartPos = new Vector2(10, 0);
-    
-    // Pig
-    [SerializeField] private Player pig;
-    private Vector2 pigStartPos = new Vector2(-10, 0);
-
     // Round transition state
 	// Handles when two players collide with each other causing two round skips
     private bool isRoundTransitioning = false;
+
+    [Header("Man")]
+    [SerializeField] private Player man;
+    private Vector2 manStartPos = new Vector2(10, 0);
+    
+    [Header("Pig")]
+    [SerializeField] private Player pig;
+    private Vector2 pigStartPos = new Vector2(-10, 0);
+
+     [Header("Results")]
+    [SerializeField] private GameObject resultCanvasRef;
+    [SerializeField] private GameObject[] resultTypes;
+    [SerializeField] private GameObject playerSpriteInResult;
+
+    public enum ResultType
+    {
+        Lose,
+        Win,
+        Draw
+    }
 
     private void Awake()
     {
@@ -43,6 +54,7 @@ public class GameManager : MonoBehaviour
     }
 
     void Start() {
+        showResult(false);
         startNewRound();
     }
 
@@ -57,7 +69,6 @@ public class GameManager : MonoBehaviour
 
         // Wait for Round intro screen with countdown
         StartCoroutine(roundIntroDelay());
-
         
         roundIntroRef.SetActive(true);
 
@@ -97,35 +108,48 @@ public class GameManager : MonoBehaviour
         pig.stopMovement();
         man.stopMovement();
         
-        if (pig.lives > 0 && man.lives > 0) {
-            // Start the coroutine to handle the delay before starting a  new round
-            StartCoroutine(HandleCollisionWithDelay());
-        }
+        // Start the coroutine to handle the delay before starting a  new round or ending a game
+        StartCoroutine(HandleCollisionWithDelay());
 
-        else 
-            endGame();
     }
 
     // Coroutine to handle the 2-second delay before starting a new round to show dead states
     private IEnumerator HandleCollisionWithDelay()
     {   
-        // Delay to ensure player has switched to dead state
-        // yield return new WaitForSecondsRealtime(0.15f);
-
-        // // Freeze the game by setting time scale to 0
-        // Time.timeScale = 0;
-
         // Delay until new round
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSeconds(2f);
 
-        // // Unfreeze the game by setting time scale back to 1
-        // Time.timeScale = 1f;
+        if (pig.lives > 0 && man.lives > 0) 
+            startNewRound(); // Call startNewRound after the delay
 
-        startNewRound(); // Call startNewRound after the delay
+        // End game if one of them has lost of their lives
+        else 
+            endGame();
+
     }
 
     public void endGame() {
-        Debug.Log("Game Over!");
+        handleResult();
+    }
+
+    void handleResult() {
+        showResult(true);
+        SpriteRenderer renderer = playerSpriteInResult.GetComponent<SpriteRenderer>();
+
+        // Draw
+        if (pig.lives == 0 && man.lives == 0) {
+            SetResultType(ResultType.Draw);
+        }
+
+        else {
+            SetResultType(ResultType.Win);
+
+            if (pig.lives != 0) 
+                renderer.sprite = pig.sprite;
+            else
+                renderer.sprite = man.sprite;
+        }
+        
     }
 
     // Resets a player's position and state for the new round
@@ -146,4 +170,16 @@ public class GameManager : MonoBehaviour
             Destroy(wall);
         }
 	}
+
+    void showResult(bool boolean) {
+        resultCanvasRef.SetActive(boolean);
+    }
+
+    private void SetResultType(ResultType result)
+    {
+        for (int i = 0; i < resultTypes.Length; i++)
+        {
+            resultTypes[i].SetActive(i == (int)result);
+        }
+    }
 }

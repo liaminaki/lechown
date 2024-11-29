@@ -2,6 +2,9 @@
 using System.Collections;
 
 public class Player : MonoBehaviour {
+	// Player Sprite
+	public Sprite sprite;
+	
 	// Lives
 	private const int MAX_LIVES = 3;
 	public int lives = MAX_LIVES;
@@ -43,9 +46,11 @@ public class Player : MonoBehaviour {
 
 	// Track if allowed to move
 	private bool canMove = false;
+	private bool isDead = false;
 
 	// Use this for initialization
 	void Start () {
+		getSprite();
 		animator = GetComponent<Animator>();
 		updateLivesUI();
 		stopMovement();
@@ -92,9 +97,15 @@ public class Player : MonoBehaviour {
 		lastMoveX = 0f;
 		lastMoveY = 0f;
 		animator.SetBool("IsDead", false);
+		isDead = false;
 
 		// Update play to look up without moving
 		updateAnim(moveX, 1f);
+	}
+
+	private void getSprite() {
+		SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+		sprite = spriteRenderer.sprite;	
 	}
 
 	void updateAnim(float _moveX, float _moveY) {
@@ -129,7 +140,7 @@ public class Player : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D co) {
-		if (co != wall) {
+		if (co != wall && !isDead) { // && canMove // canMove = !isDead, this make sure it wont trigger again when alr dead
 			OnPlayerDead();
 			GameManager.Instance.handleCollision();
 		}
@@ -137,6 +148,7 @@ public class Player : MonoBehaviour {
 
 	void OnPlayerDead() {
 		animator.SetBool("IsDead", true);
+		isDead = true;
 
 		updateAnim(lastMoveX, lastMoveY);
 		reduceLife();
