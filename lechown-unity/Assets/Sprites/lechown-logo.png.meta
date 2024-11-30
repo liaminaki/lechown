@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 3be61f73820d249be83ce698046b4ac5
+guid: 43ef6d228d5ab4c58a58d42403095a66
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4364034832326165938
-    second: bg_0
+      213: 461395229672147186
+    second: lechown-logo_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bg_0
+      name: lechown-logo_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 170
         width: 3840
-        height: 2160
+        height: 1638
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e4a74cf0175df63c0800000000000000
-      internalID: -4364034832326165938
+      spriteID: 2f80bad4484376600800000000000000
+      internalID: 461395229672147186
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      bg_0: -4364034832326165938
+      lechown-logo_0: 461395229672147186
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

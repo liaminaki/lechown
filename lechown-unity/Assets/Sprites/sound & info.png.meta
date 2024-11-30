@@ -1,10 +1,22 @@
 fileFormatVersion: 2
-guid: 3be61f73820d249be83ce698046b4ac5
+guid: fccd7a86d94da4129816a67f75e76414
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4364034832326165938
-    second: bg_0
+      213: 9221371810210723849
+    second: sound & info_0
+  - first:
+      213: 3735582161882558908
+    second: sound & info_1
+  - first:
+      213: 2841109520465713108
+    second: sound & info_2
+  - first:
+      213: 693897828368591620
+    second: sound & info_3
+  - first:
+      213: 8566861994820621199
+    second: sound & info_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +112,111 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bg_0
+      name: sound & info_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 3840
-        height: 2160
+        x: 176
+        y: 1798
+        width: 260
+        height: 231
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e4a74cf0175df63c0800000000000000
-      internalID: -4364034832326165938
+      spriteID: 9083961fdc4e8ff70800000000000000
+      internalID: 9221371810210723849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sound & info_1
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 1474
+        width: 41
+        height: 123
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb1bb4c2f2477d330800000000000000
+      internalID: 3735582161882558908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sound & info_2
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 1488
+        width: 54
+        height: 167
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d7d6575e06ad6720800000000000000
+      internalID: 2841109520465713108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sound & info_3
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 1443
+        width: 79
+        height: 231
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40b2352066831a900800000000000000
+      internalID: 693897828368591620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sound & info_4
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 1796
+        width: 232
+        height: 232
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f83d319589b93e670800000000000000
+      internalID: 8566861994820621199
       vertices: []
       indices: 
       edges: []
@@ -125,7 +225,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: fdca12679b7c549e68939b5157959bf3
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +235,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      bg_0: -4364034832326165938
+      sound & info_0: 9221371810210723849
+      sound & info_1: 3735582161882558908
+      sound & info_2: 2841109520465713108
+      sound & info_3: 693897828368591620
+      sound & info_4: 8566861994820621199
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
