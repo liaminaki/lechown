@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
+using TMPro;
 
 public class GameSetup : NetworkBehaviour
 {
     [SerializeField] private Button startHostButton;
     [SerializeField] private Button joinGameButton;
-    [SerializeField] private TextMeshProGUI playersCountText;
+    [SerializeField] private TextMeshProUGUI playersCountText;
     /*    [SerializeField] private GameObject joinGame;
         [SerializeField] private GameObject hostGame;*/
 
