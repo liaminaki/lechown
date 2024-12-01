@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.UI;
 
@@ -19,3 +19,4 @@ public class JoinGame : MonoBehaviour
     }
 
 }
+*/
