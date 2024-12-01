@@ -9,11 +9,22 @@ public class HostGame : NetworkBehaviour
     [SerializeField] TextMeshProUGUI iPAddress;
     [SerializeField] TextMeshProUGUI playerCount;
 
+    public string currentPlayerCount;
+
+    public void Start()
+    {
+        currentPlayerCount = GetPlayerCount().ToString();
+    }
+
+    public void Update()
+    {
+        playerCount.text = currentPlayerCount + "/2 PLAYERS";
+    }
+
     public void StartHostGame()
     {
         // Get local IP Address
         string localIPAddress = GetLocalIPAddress();
-        string currentPlayerCount = GetPlayerCount().ToString();
 
         if (string.IsNullOrEmpty(localIPAddress))
         {
@@ -26,6 +37,7 @@ public class HostGame : NetworkBehaviour
         if (unityTransport != null)
         {
             unityTransport.ConnectionData.Address = localIPAddress;
+            unityTransport.ConnectionData.Port = 7777;
             Debug.Log($"Host IP set to: {localIPAddress}");
         }
 
@@ -33,7 +45,6 @@ public class HostGame : NetworkBehaviour
         if (NetworkManager.Singleton.StartHost())
         {
             iPAddress.text = localIPAddress;
-            playerCount.text = currentPlayerCount + "/2 PLAYERS";
             Debug.Log("Host started successfully!");
         }
         else
