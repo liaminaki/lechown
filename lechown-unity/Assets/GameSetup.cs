@@ -20,14 +20,14 @@ public class GameSetup : NetworkBehaviour
 
         startHostButton.onClick.AddListener(() => {
             //Debug.Log("Host Starting");
-            //NetworkManager.Singleton.StartHost();
+            NetworkManager.Singleton.StartHost();
             /*hostGame.SetActive(true);*/
             Hide();
         });
 
         joinGameButton.onClick.AddListener(() => {
             //Debug.Log("Joining Game");
-            //NetworkManager.Singleton.StartClient();
+            NetworkManager.Singleton.StartClient();
             /*joinGame.SetActive(true);*/
             Hide();
         });
