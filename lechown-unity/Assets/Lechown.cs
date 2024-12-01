@@ -5,6 +5,9 @@ public class Lechown : MonoBehaviour
 {
     public static Lechown Instance { get; private set; }
 
+    [Header("Splash Screen")]
+    [SerializeField] private GameObject splashScreenRef;
+
     [Header("Sounds")]
     [SerializeField] private Button soundButton; 
     [SerializeField] private Sprite soundOnSprite; 
@@ -28,6 +31,11 @@ public class Lechown : MonoBehaviour
     }
 
     private void Start() {
+
+        if (SceneController.Instance.GetPreviousScene() != null) {
+            splashScreenRef.SetActive(false);
+        }
+
         closeInfoCanvas();
         InitializeSoundState();
     }
