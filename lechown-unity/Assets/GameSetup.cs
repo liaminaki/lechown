@@ -10,12 +10,12 @@ public class GameSetup : NetworkBehaviour
     /*    [SerializeField] private GameObject joinGame;
         [SerializeField] private GameObject hostGame;*/
 
-    private NetworkVariable<int> playersNum = new NetworkVariable<int>();
+    private NetworkVariable<int> playersNum = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone);
 
     private void Awake(){
 
-        joinGame.SetActive(false);
-        hostGame.SetActive(false);
+        /*joinGame.SetActive(false);
+        hostGame.SetActive(false);*/
 
         startHostButton.onClick.AddListener(() => {
             //Debug.Log("Host Starting");
@@ -38,8 +38,9 @@ public class GameSetup : NetworkBehaviour
 
     private void Update()
     {
-        if(!IsServer) return;
+        playersCountText.text = playersNum.Value.ToString() + "/2 PLAYERS";
+        if (!IsServer) return;
         playersNum.Value = NetworkManager.Singleton.ConnectedClients.Count;
-        playersCountText.text = playersNum.Value.ToString();
+        
     }
 }
