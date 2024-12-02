@@ -9,10 +9,12 @@ using System.Linq;
 
 public class JoinGame : NetworkBehaviour
 {
-    [SerializeField] InputField inputField;
+    [SerializeField] TextMeshProUGUI inputField;
     [SerializeField] private Button joinGameButton;
     [SerializeField] TextMeshProUGUI statusText;
     [SerializeField] UnityTransport transport;
+    [SerializeField] private Button backButton;
+    [SerializeField] GameObject gameOption;
 
     private const string IpPattern = @"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
 
@@ -23,6 +25,11 @@ public class JoinGame : NetworkBehaviour
         {
             JoinGameClicked();
         });
+
+        backButton.onClick.AddListener(() => {
+            gameOption.SetActive(true);
+            gameObject.SetActive(false);
+        } );
     }
 
     private void JoinGameClicked()
