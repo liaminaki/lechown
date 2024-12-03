@@ -1,13 +1,16 @@
 using UnityEngine;
+using UnityEngine.UI;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using TMPro;
 
-public class HostGame : NetworkBehaviour
+public class HostGame : MonoBehaviour
 {
 
     [SerializeField] TextMeshProUGUI iPAddress;
     [SerializeField] TextMeshProUGUI playerCount;
+    [SerializeField] Button backButton;
+    [SerializeField] GameObject gameOption;
 
     public string currentPlayerCount;
 
@@ -16,10 +19,16 @@ public class HostGame : NetworkBehaviour
         currentPlayerCount = GetPlayerCount().ToString();
     }
 
-    public void Update()
+    private void Update()
     {
-        playerCount.text = currentPlayerCount + "/2 PLAYERS";
-    }
+        playerCount.text = GetPlayerCount().ToString() + "/2 PLAYERS";
+
+        backButton.onClick.AddListener(() =>
+        {
+            gameOption.SetActive(true);
+            gameObject.SetActive(false);
+        });
+    } 
 
     public void StartHostGame()
     {
@@ -33,24 +42,15 @@ public class HostGame : NetworkBehaviour
         }
 
         // Configure Unity Transport to Use the Device IP Address
-        var unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-        if (unityTransport != null)
-        {
-            unityTransport.ConnectionData.Address = localIPAddress;
-            unityTransport.ConnectionData.Port = 7777;
-            Debug.Log($"Host IP set to: {localIPAddress}");
-        }
+        /*NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
+            localIPAddress, // IP Address of the Device
+            7777            // Port
+        );*/
 
         // Start the host
-        if (NetworkManager.Singleton.StartHost())
-        {
-            iPAddress.text = localIPAddress;
-            Debug.Log("Host started successfully!");
-        }
-        else
-        {
-            Debug.LogError("Failed to start host!");
-        }
+        NetworkManager.Singleton.StartHost();
+        iPAddress.text = localIPAddress;
+        Debug.Log("Host started successfully!");
 
     }
 

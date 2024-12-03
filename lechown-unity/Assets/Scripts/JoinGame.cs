@@ -3,20 +3,23 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using TMPro;
 using UnityEngine.UI;
-using System.Text.RegularExpressions;
-using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+/*using System.Text.RegularExpressions;
+using System.Linq;*/
   
 
-public class JoinGame : NetworkBehaviour
+public class JoinGame : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI inputField;
     [SerializeField] private Button joinGameButton;
     [SerializeField] TextMeshProUGUI statusText;
-    [SerializeField] UnityTransport transport;
+/*    [SerializeField] UnityTransport transport;*/
     [SerializeField] private Button backButton;
     [SerializeField] GameObject gameOption;
+    [SerializeField] GameObject gameLobby;
 
-    private const string IpPattern = @"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+    //private const string IpPattern = @"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
 
     private void Awake()
     {
@@ -37,7 +40,7 @@ public class JoinGame : NetworkBehaviour
         string iPAddress = inputField.text.Trim();
         Debug.Log("current IP: " +iPAddress);
 
-        if (string.IsNullOrEmpty(iPAddress))
+        /*if (string.IsNullOrEmpty(iPAddress))
         {
             Debug.LogError("Invalid IP Address");
             statusText.gameObject.SetActive(true);
@@ -45,6 +48,8 @@ public class JoinGame : NetworkBehaviour
             statusText.text = "IP Address cannot be empty";
             return;
         }
+
+*//*        string restrictedIPAddress = "127.0.0.1"; // for testing purposes in local machine use this!!!*/
 
 /*        if (!IsValidIPAddress(iPAddress))
         {
@@ -55,11 +60,14 @@ public class JoinGame : NetworkBehaviour
             return;
         }*/
 
-        if (transport != null)
-        {
-            transport.ConnectionData.Address = iPAddress; // Set the address to the input IP
-            Debug.Log($"Attempting to connect to host at {iPAddress} on port {transport.ConnectionData.Port}.");
-        }
+/*        if (transport != null)
+        {*//*
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
+                iPAddress,  // IP Address inputted
+                7777        // Port
+                );
+            Debug.Log($"Attempting to connect to host at {iPAddress}");*/
+/*        }*/
 
         // Start the client and try to connect to the server (host)
         NetworkManager.Singleton.StartClient();
@@ -69,13 +77,15 @@ public class JoinGame : NetworkBehaviour
         statusText.color = Color.green;
         statusText.text = "Connecting...";
 
+
+
         // Register network events to check if the connection is successful or fails
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
     }
 
     // Function to validate the input IP address using regex
-    private bool IsValidIPAddress(string ipAddress)
+    /*private bool IsValidIPAddress(string ipAddress)
     {
         // Remove invisible characters or non-printing characters
         ipAddress = string.Concat(ipAddress.Where(c => !char.IsControl(c))); // Remove control characters
@@ -84,20 +94,29 @@ public class JoinGame : NetworkBehaviour
         bool isValid = Regex.IsMatch(ipAddress, IpPattern);
         Debug.Log($"IP Address '{ipAddress}' is valid: {isValid}");
         return isValid;
-    }
+    }*/
 
     private void OnClientConnected(ulong clientId)
     {
         // This callback is called when the client successfully connects to the host
         Debug.Log("Client connected to the host.");
-        statusText.color = Color.red;
         statusText.text = "Connected to host!";
+
+        gameLobby.SetActive(true);
+        gameObject.SetActive(false);
     }
 
     private void OnClientDisconnected(ulong clientId)
     {
         // This callback is called if the client disconnects from the host
         Debug.LogError("Failed to connect or disconnected.");
+        statusText.color = Color.red;
         statusText.text = "Failed to connect to host.";
     }
+
+    // Make sure to clean up
+/*    private void OnDestroy()
+    {
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+    }*/
 }
