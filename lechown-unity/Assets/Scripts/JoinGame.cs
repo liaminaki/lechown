@@ -19,10 +19,14 @@ public class JoinGame : MonoBehaviour
     [SerializeField] GameObject gameOption;
     [SerializeField] GameObject gameLobby;
 
+    private HostGame hostGameScript;
+    string iPAddress;
+
     //private const string IpPattern = @"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
 
     private void Awake()
     {
+        hostGameScript = gameLobby.GetComponent<HostGame>();
         statusText.gameObject.SetActive(false);
         joinGameButton.onClick.AddListener(() =>
         {
@@ -37,7 +41,7 @@ public class JoinGame : MonoBehaviour
 
     private void JoinGameClicked()
     {
-        string iPAddress = inputField.text.Trim();
+        iPAddress = inputField.text.Trim();
         Debug.Log("current IP: " +iPAddress);
 
         /*if (string.IsNullOrEmpty(iPAddress))
@@ -102,7 +106,14 @@ public class JoinGame : MonoBehaviour
         Debug.Log("Client connected to the host.");
         statusText.text = "Connected to host!";
 
+        if (clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            // Send the player's name and initial status to the host
+            SendPlayerNameToHost();
+        }
+
         gameLobby.SetActive(true);
+        hostGameScript.SetIPAddress(iPAddress);
         gameObject.SetActive(false);
     }
 
@@ -114,9 +125,23 @@ public class JoinGame : MonoBehaviour
         statusText.text = "Failed to connect to host.";
     }
 
-    // Make sure to clean up
-/*    private void OnDestroy()
+    private void SendPlayerNameToHost()
     {
-        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-    }*/
+        if (NetworkManager.Singleton.IsConnectedClient)
+        {
+            AddPlayerServerRpc("Client", "NOT READY");
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void AddPlayerServerRpc(string playerName, string status)
+    {
+        Debug.Log($"Player {playerName} joined the game with status: {status}");
+    }
+
+    // Make sure to clean up
+    /*    private void OnDestroy()
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }*/
 }
