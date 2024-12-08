@@ -1,0 +1,845 @@
+fileFormatVersion: 2
+guid: 86c2aa3efe4194d5992a99d4988844cf
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3223571961350964404
+    second: controls w keys 1_0
+  - first:
+      213: -7368201073139653479
+    second: controls w keys 1_1
+  - first:
+      213: -5638389078077467276
+    second: controls w keys 1_2
+  - first:
+      213: 6463439509524937631
+    second: controls w keys 1_3
+  - first:
+      213: 4857114834885636247
+    second: controls w keys 1_4
+  - first:
+      213: -4578962334581303507
+    second: controls w keys 1_5
+  - first:
+      213: 7214397275481383435
+    second: controls w keys 1_6
+  - first:
+      213: 7323112101674102852
+    second: controls w keys 1_7
+  - first:
+      213: -5254608475562864680
+    second: controls w keys 1_8
+  - first:
+      213: -5643739731048984727
+    second: controls w keys 1_9
+  - first:
+      213: -5970314471223900777
+    second: controls w keys 1_10
+  - first:
+      213: 6360925231912949454
+    second: controls w keys 1_11
+  - first:
+      213: 5470782813655409884
+    second: controls w keys 1_12
+  - first:
+      213: 7781685919464698652
+    second: controls w keys 1_13
+  - first:
+      213: -5638274970562285494
+    second: controls w keys 1_14
+  - first:
+      213: -6653863316464219537
+    second: controls w keys 1_15
+  - first:
+      213: -339963361122920417
+    second: controls w keys 1_16
+  - first:
+      213: 3472485190268887925
+    second: controls w keys 1_17
+  - first:
+      213: 7370486919415778698
+    second: controls w keys 1_18
+  - first:
+      213: 5599321901277356323
+    second: controls w keys 1_19
+  - first:
+      213: 3260670468607792030
+    second: controls w keys 1_20
+  - first:
+      213: 523674901782849394
+    second: controls w keys 1_21
+  - first:
+      213: 2506898416403326498
+    second: controls w keys 1_22
+  - first:
+      213: -4726212911823392696
+    second: controls w keys 1_23
+  - first:
+      213: 645430305151112295
+    second: controls w keys 1_24
+  - first:
+      213: -7809301268961512918
+    second: controls w keys 1_25
+  - first:
+      213: -6065313731235575926
+    second: controls w keys 1_26
+  - first:
+      213: 5176456169903111593
+    second: controls w keys 1_27
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: controls w keys 1_0
+      rect:
+        serializedVersion: 2
+        x: 1028
+        y: 687
+        width: 60
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4b34cf51629343d0800000000000000
+      internalID: -3223571961350964404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_1
+      rect:
+        serializedVersion: 2
+        x: 1096
+        y: 687
+        width: 78
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 994ebd19924eeb990800000000000000
+      internalID: -7368201073139653479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_2
+      rect:
+        serializedVersion: 2
+        x: 1182
+        y: 687
+        width: 78
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47510c7c10b60c1b0800000000000000
+      internalID: -5638389078077467276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_3
+      rect:
+        serializedVersion: 2
+        x: 1268
+        y: 687
+        width: 69
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9b75783dffb2b950800000000000000
+      internalID: 6463439509524937631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_4
+      rect:
+        serializedVersion: 2
+        x: 1345
+        y: 687
+        width: 69
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79073ae4530f76340800000000000000
+      internalID: 4857114834885636247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_5
+      rect:
+        serializedVersion: 2
+        x: 1422
+        y: 687
+        width: 78
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d27536f54024470c0800000000000000
+      internalID: -4578962334581303507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_6
+      rect:
+        serializedVersion: 2
+        x: 1508
+        y: 687
+        width: 60
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b022d993910be1460800000000000000
+      internalID: 7214397275481383435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_7
+      rect:
+        serializedVersion: 2
+        x: 1576
+        y: 687
+        width: 60
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44036ae28abe0a560800000000000000
+      internalID: 7323112101674102852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_8
+      rect:
+        serializedVersion: 2
+        x: 991
+        y: 659
+        width: 697
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8df815c7e61e317b0800000000000000
+      internalID: -5254608475562864680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_9
+      rect:
+        serializedVersion: 2
+        x: 1302
+        y: 601
+        width: 15
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96f011ecd986da1b0800000000000000
+      internalID: -5643739731048984727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_10
+      rect:
+        serializedVersion: 2
+        x: 1319
+        y: 601
+        width: 15
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7954359de9e252da0800000000000000
+      internalID: -5970314471223900777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_11
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 447
+        width: 134
+        height: 135
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec69dfafbcb864850800000000000000
+      internalID: 6360925231912949454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_12
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 350
+        width: 12
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd42e3bcbff1ceb40800000000000000
+      internalID: 5470782813655409884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_13
+      rect:
+        serializedVersion: 2
+        x: 1039
+        y: 350
+        width: 13
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c133a575d1a1efb60800000000000000
+      internalID: 7781685919464698652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_14
+      rect:
+        serializedVersion: 2
+        x: 1054
+        y: 350
+        width: 13
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a40b8a189c2d0c1b0800000000000000
+      internalID: -5638274970562285494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_15
+      rect:
+        serializedVersion: 2
+        x: 1070
+        y: 350
+        width: 14
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6ac52e319ab8a3a0800000000000000
+      internalID: -6653863316464219537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_16
+      rect:
+        serializedVersion: 2
+        x: 1099
+        y: 293
+        width: 141
+        height: 142
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f18de9fcf15384bf0800000000000000
+      internalID: -339963361122920417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_17
+      rect:
+        serializedVersion: 2
+        x: 1244
+        y: 292
+        width: 145
+        height: 146
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57328cde1eeb03030800000000000000
+      internalID: 3472485190268887925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_18
+      rect:
+        serializedVersion: 2
+        x: 1392
+        y: 292
+        width: 145
+        height: 146
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8dc07d7dca394660800000000000000
+      internalID: 7370486919415778698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_19
+      rect:
+        serializedVersion: 2
+        x: 1553
+        y: 351
+        width: 14
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 321a3bc4a99c4bd40800000000000000
+      internalID: 5599321901277356323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_20
+      rect:
+        serializedVersion: 2
+        x: 1570
+        y: 351
+        width: 11
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9359f2f38a304d20800000000000000
+      internalID: 3260670468607792030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_21
+      rect:
+        serializedVersion: 2
+        x: 1583
+        y: 351
+        width: 17
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 277ed827c87744700800000000000000
+      internalID: 523674901782849394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_22
+      rect:
+        serializedVersion: 2
+        x: 1603
+        y: 351
+        width: 14
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 226a5bdd3da4ac220800000000000000
+      internalID: 2506898416403326498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_23
+      rect:
+        serializedVersion: 2
+        x: 1620
+        y: 351
+        width: 15
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 840f6e1b56e196eb0800000000000000
+      internalID: -4726212911823392696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_24
+      rect:
+        serializedVersion: 2
+        x: 1279
+        y: 246
+        width: 17
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 764ddc1617705f800800000000000000
+      internalID: 645430305151112295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_25
+      rect:
+        serializedVersion: 2
+        x: 1299
+        y: 246
+        width: 17
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a22ba8f0fd9cf9390800000000000000
+      internalID: -7809301268961512918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_26
+      rect:
+        serializedVersion: 2
+        x: 1318
+        y: 246
+        width: 19
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a87876efb4da3dba0800000000000000
+      internalID: -6065313731235575926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: controls w keys 1_27
+      rect:
+        serializedVersion: 2
+        x: 1339
+        y: 246
+        width: 17
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ad3472e57776d740800000000000000
+      internalID: 5176456169903111593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      controls w keys 1_0: -3223571961350964404
+      controls w keys 1_1: -7368201073139653479
+      controls w keys 1_10: -5970314471223900777
+      controls w keys 1_11: 6360925231912949454
+      controls w keys 1_12: 5470782813655409884
+      controls w keys 1_13: 7781685919464698652
+      controls w keys 1_14: -5638274970562285494
+      controls w keys 1_15: -6653863316464219537
+      controls w keys 1_16: -339963361122920417
+      controls w keys 1_17: 3472485190268887925
+      controls w keys 1_18: 7370486919415778698
+      controls w keys 1_19: 5599321901277356323
+      controls w keys 1_2: -5638389078077467276
+      controls w keys 1_20: 3260670468607792030
+      controls w keys 1_21: 523674901782849394
+      controls w keys 1_22: 2506898416403326498
+      controls w keys 1_23: -4726212911823392696
+      controls w keys 1_24: 645430305151112295
+      controls w keys 1_25: -7809301268961512918
+      controls w keys 1_26: -6065313731235575926
+      controls w keys 1_27: 5176456169903111593
+      controls w keys 1_3: 6463439509524937631
+      controls w keys 1_4: 4857114834885636247
+      controls w keys 1_5: -4578962334581303507
+      controls w keys 1_6: 7214397275481383435
+      controls w keys 1_7: 7323112101674102852
+      controls w keys 1_8: -5254608475562864680
+      controls w keys 1_9: -5643739731048984727
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 359aef27f42474d949e010d6e637805b
+guid: 438c746acbce5461783f917aa87a351d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3922550992064538625
-    second: usercontrols2_0
+      213: 786610568191582912
+    second: try2- donebutton_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -96,40 +96,27 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: usercontrols2_0
+      name: done
       rect:
         serializedVersion: 2
-        x: 140
-        y: 166
-        width: 1624
-        height: 715
+        x: 1045
+        y: 357
+        width: 327
+        height: 87
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ff713a0c7ac4099c0800000000000000
-      internalID: -3922550992064538625
+      spriteID: 0c2a0a5e42a9aea00800000000000000
+      internalID: 786610568191582912
       vertices: []
       indices: 
       edges: []
@@ -138,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: e843bd67ee97e48f39e8474bc896001d
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      usercontrols2_0: -3922550992064538625
+      done: 786610568191582912
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
