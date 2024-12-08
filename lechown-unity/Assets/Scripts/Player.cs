@@ -9,7 +9,7 @@ public class Player : MonoBehaviour {
 	// Lives
 	private const int MAX_LIVES = 3;
 	public int lives = MAX_LIVES;
-	[SerializeField] private GameObject[] livesUI;
+	public GameObject[] livesUI;
 	[SerializeField] private Sprite lifeUI;
 	[SerializeField] private Sprite noLifeUI;
 
@@ -51,6 +51,46 @@ public class Player : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+		if (gameObject.name == "man"){
+			//find the "man lives Game Object
+			GameObject manLives = GameObject.Find("man lives");
+
+			if (manLives != null){
+				//Get all children of man lives
+				int childCount = manLives.transform.childCount;
+				livesUI = new GameObject[childCount];
+
+				for (int i = 0; i < childCount; i++){
+					livesUI[i] = manLives.transform.GetChild(i).gameObject;
+				}
+
+				Debug.Log("Man Lives initialized");
+			}
+			else{
+				Debug.Log("Man Lives is null");
+			}
+		}
+		else if (gameObject.name == "pig"){
+			//find the "man lives Game Object
+			GameObject pigLives = GameObject.Find("pig lives");
+
+			if (pigLives != null){
+				//Get all children of man lives
+				int childCount = pigLives.transform.childCount;
+				livesUI = new GameObject[childCount];
+
+				for (int i = 0; i < childCount; i++){
+					livesUI[i] = pigLives.transform.GetChild(i).gameObject;
+				}
+
+				Debug.Log("Pig Lives initialized");
+			}
+			else{
+				Debug.Log("Pig Lives is null");
+			}
+		}
+
 		getSprite();
 		animator = GetComponent<Animator>();
 		updateLivesUI();

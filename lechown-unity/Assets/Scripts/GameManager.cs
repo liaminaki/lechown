@@ -16,11 +16,11 @@ public class GameManager : MonoBehaviour
     private bool isRoundTransitioning = false;
 
     [Header("Man")]
-    [SerializeField] private Player man;
+    private Player man;
     private Vector2 manStartPos = new Vector2(10, 0);
     
     [Header("Pig")]
-    [SerializeField] private Player pig;
+    private Player pig;
     private Vector2 pigStartPos = new Vector2(-10, 0);
 
      [Header("Results")]
@@ -51,6 +51,20 @@ public class GameManager : MonoBehaviour
  
         // Optional: Keep the GameManager persistent across scenes
         DontDestroyOnLoad(gameObject);
+
+        //Finding the GameObject for Man/Pig
+        GameObject manObject = GameObject.Find("man");
+        GameObject pigObject = GameObject.Find("pig");
+
+        if(manObject != null)
+            man = manObject.GetComponent<Player>();
+        else
+            Debug.LogError("GameObject named 'Man' not found!");
+
+        if (pigObject != null)
+            pig = pigObject.GetComponent<Player>();
+        else
+            Debug.LogError("GameObject named 'Pig' not found!");
     }
 
     void Start() {
