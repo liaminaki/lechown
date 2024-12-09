@@ -158,11 +158,16 @@ public class Player : NetworkBehaviour {
 	}
 
 	void spawnWall() {
+		if (!IsOwner) return; // Ensure only the owner spawns the wall
+
 		// Save last wall's position
 		lastWallEnd = transform.position;
 
-		// Spawn a new Lightwall
 		GameObject g = (GameObject)Instantiate (wallPrefab, transform.position, Quaternion.identity);
+		// NetworkObject networkObject = g.GetComponent<NetworkObject>();
+		// if (networkObject != null) {
+		// 	networkObject.Spawn(true); // Ensure it's visible to all clients
+		// }
 		wall = g.GetComponent<Collider2D>();
 
 		g.tag = "Wall";
