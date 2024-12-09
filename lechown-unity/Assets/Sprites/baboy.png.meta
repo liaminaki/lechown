@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      baboy_0: 5265870390453547399
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
