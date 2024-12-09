@@ -3,7 +3,9 @@ using Unity.Netcode;
 
 public class PlayerSpawner : NetworkBehaviour
 {
-    [SerializeField] private GameObject playerPrefab; // Assign your Player prefab in the Inspector
+    [SerializeField] private GameObject pigPrefab; // Pig player prefab
+    [SerializeField] private GameObject manPrefab; // Man player prefab
+
 
     public override void OnNetworkSpawn()
     {
@@ -18,17 +20,18 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void SpawnPlayer(ulong clientId)
     {
+        // Randomly choose between the pig and man prefabs
+        GameObject playerPrefab = Random.Range(0, 2) == 0 ? pigPrefab : manPrefab;
+
         // Instantiate the player prefab
         GameObject playerInstance = Instantiate(playerPrefab);
-        
 
         // Assign the NetworkObject and spawn it
         NetworkObject networkObject = playerInstance.GetComponent<NetworkObject>();
         if (networkObject != null)
         {
             networkObject.SpawnAsPlayerObject(clientId);
-            Debug.Log($"IsOwner: {GetComponent<NetworkObject>().IsOwner}");
-
+            Debug.Log($"IsOwner: {networkObject.IsOwner}");
         }
         else
         {

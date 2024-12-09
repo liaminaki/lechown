@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {   
     public static GameManager Instance { get; private set; } // Static singleton instance
 
@@ -53,8 +54,8 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         //Finding the GameObject for Man/Pig
-        GameObject manObject = GameObject.Find("man");
-        GameObject pigObject = GameObject.Find("pig");
+        GameObject manObject = GameObject.Find("man(Clone)");
+        GameObject pigObject = GameObject.Find("pig(Clone)");
 
         if(manObject != null)
             man = manObject.GetComponent<Player>();

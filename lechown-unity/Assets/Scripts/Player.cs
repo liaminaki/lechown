@@ -2,14 +2,14 @@
 using System.Collections;
 using Unity.Netcode;
 
-public class Player : MonoBehaviour {
+public class Player : NetworkBehaviour {
 	// Player Sprite
 	public Sprite sprite;
 	
 	// Lives
 	private const int MAX_LIVES = 3;
 	public int lives = MAX_LIVES;
-	public GameObject[] livesUI;
+	private GameObject[] livesUI;
 	[SerializeField] private Sprite lifeUI;
 	[SerializeField] private Sprite noLifeUI;
 
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		if (gameObject.name == "man"){
+		if (gameObject.name == "man(Clone)"){
 			//find the "man lives Game Object
 			GameObject manLives = GameObject.Find("man lives");
 
@@ -71,7 +71,7 @@ public class Player : MonoBehaviour {
 				Debug.Log("Man Lives is null");
 			}
 		}
-		else if (gameObject.name == "pig"){
+		else if (gameObject.name == "pig(Clone)"){
 			//find the "man lives Game Object
 			GameObject pigLives = GameObject.Find("pig lives");
 

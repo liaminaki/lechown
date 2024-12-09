@@ -64,7 +64,7 @@ public class HostGame : MonoBehaviour
         startButton.onClick.AddListener(() =>
         {
             string scene = "Main Scene";
-            SceneManager.LoadScene(scene);
+            NetworkManager.Singleton.SceneManager.LoadScene(scene, LoadSceneMode.Single);
         });
     } 
 
