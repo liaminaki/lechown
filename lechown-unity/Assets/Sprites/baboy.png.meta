@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8621fa7214b19c448819cc13426e9c9a
+guid: 2df4ffd557f5023478b50fc8bcb2b6c4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6859815811127751925
-    second: paltform_0
+      213: 5265870390453547399
+    second: baboy_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: paltform_0
+      name: baboy_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 750
-        height: 152
+        width: 947
+        height: 561
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b0b4f195dd90dc0a0800000000000000
-      internalID: -6859815811127751925
+      spriteID: 7813b386831241940800000000000000
+      internalID: 5265870390453547399
       vertices: []
       indices: 
       edges: []
@@ -147,8 +147,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      paltform_0: -6859815811127751925
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
