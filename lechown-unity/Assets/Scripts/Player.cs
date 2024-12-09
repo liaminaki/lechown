@@ -101,6 +101,7 @@ public class Player : NetworkBehaviour {
 	void Update () {
 
 		if (!canMove) return;
+		if (!IsOwner) return;
 
 		moveX = 0f;
 		moveY = 0f;

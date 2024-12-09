@@ -51,24 +51,29 @@ public class GameManager : NetworkBehaviour
         }
  
         // Optional: Keep the GameManager persistent across scenes
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject); 
+    }
+
+    void Start() {
 
         //Finding the GameObject for Man/Pig
         GameObject manObject = GameObject.Find("man(Clone)");
         GameObject pigObject = GameObject.Find("pig(Clone)");
 
-        if(manObject != null)
+        if(manObject != null){
             man = manObject.GetComponent<Player>();
+            Debug.Log("Man GameObject Found");
+        }
         else
-            Debug.LogError("GameObject named 'Man' not found!");
+            Debug.Log("GameObject named 'Man' not found!");
 
-        if (pigObject != null)
+        if (pigObject != null){
             pig = pigObject.GetComponent<Player>();
+            Debug.Log("Pig GameObject Found");
+        }   
         else
-            Debug.LogError("GameObject named 'Pig' not found!");
-    }
+            Debug.Log("GameObject named 'Pig' not found!");
 
-    void Start() {
         showResult(false);
         startNewRound();
     }
