@@ -168,7 +168,7 @@ public class Lechown : MonoBehaviour
     {
 
         if (IsUsernameSet())
-            SceneController.Instance.SwitchScene("Main Scene");
+            SceneController.Instance.SwitchScene("GameLobby");
 
         else
             showUsernameCard();

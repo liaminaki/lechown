@@ -1,13 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {   
     public static GameManager Instance { get; private set; } // Static singleton instance
 
     [Header("Rounds")]
     private const int MAX_ROUNDS = 5;
-    private int currentRound = 0;
+    public NetworkVariable<int> currentRound = new NetworkVariable<int>(0);
     [SerializeField] private Sprite[] roundNumImg;
     [SerializeField] private GameObject roundNumRef;
     [SerializeField] private GameObject roundIntroRef;
@@ -16,14 +17,14 @@ public class GameManager : MonoBehaviour
     private bool isRoundTransitioning = false;
 
     [Header("Man")]
-    [SerializeField] private Player man;
+    public Player man;
     private Vector2 manStartPos = new Vector2(10, 0);
     
     [Header("Pig")]
-    [SerializeField] private Player pig;
+    public Player pig;
     private Vector2 pigStartPos = new Vector2(-10, 0);
 
-     [Header("Results")]
+    [Header("Results")]
     [SerializeField] private GameObject resultCanvasRef;
     [SerializeField] private GameObject[] resultTypes;
     [SerializeField] private GameObject playerSpriteInResult;
@@ -40,7 +41,21 @@ public class GameManager : MonoBehaviour
         // Ensure only one instance of GameManager exists
         if (Instance == null)
         {
-            Instance = this;
+            Instance = this;     
+
+            if (IsServer)
+            {
+                NetworkObject networkObject = GetComponent<NetworkObject>();
+                
+                if (networkObject != null)
+                {
+                    networkObject.Spawn();
+                }
+                else
+                {
+                    Debug.LogError("GameManager does not have a NetworkObject component or already spawned!");
+                }
+            }   
         }
         else
         {
@@ -49,13 +64,38 @@ public class GameManager : MonoBehaviour
             return;
         }
  
-        // Optional: Keep the GameManager persistent across scenes
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start() {
+        InitPlayerObjects();
         showResult(false);
         startNewRound();
+        // StartCoroutine(StartNewRoundWithDelay());
+    }
+
+    IEnumerator StartNewRoundWithDelay() {
+        yield return new WaitForSeconds(1f); // Wait for 1 second
+        startNewRound();
+    }
+
+    void InitPlayerObjects() {
+        //Finding the GameObject for Man/Pig
+        GameObject manObject = GameObject.Find("man(Clone)");
+        GameObject pigObject = GameObject.Find("pig(Clone)");
+
+        if(manObject != null){
+            man = manObject.GetComponent<Player>();
+            Debug.Log("Man GameObject Found");
+        }
+        else
+            Debug.Log("GameObject named 'Man' not found!");
+
+        if (pigObject != null){
+            pig = pigObject.GetComponent<Player>();
+            Debug.Log("Pig GameObject Found");
+        }   
+        else
+            Debug.Log("GameObject named 'Pig' not found!");
     }
 
     // Resets the state for a new round
@@ -64,15 +104,16 @@ public class GameManager : MonoBehaviour
         if (isRoundTransitioning) return; // Prevent simultaneous transitions
 
         isRoundTransitioning = true; // Lock transitions
-        currentRound++;
-        updRoundNumRef();
+
+        if(IsServer)
+            currentRound.Value++; 
 
         // Wait for Round intro screen with countdown
         StartCoroutine(roundIntroDelay());
         
-        roundIntroRef.SetActive(true);
+        ShowRoundIntroServerRpc(true, currentRound.Value);
 
-        Debug.Log($"Starting Round {currentRound}");
+        Debug.Log($"Starting Round {currentRound.Value}");
 
         // Clear walls or any round-specific data
         clearWalls();
@@ -85,16 +126,34 @@ public class GameManager : MonoBehaviour
         StartCoroutine(UnlockRoundTransition());
     }
 
-    private void updRoundNumRef () {
+    [ServerRpc(RequireOwnership = false)]
+    void ShowRoundIntroServerRpc(bool boolean, int round) {
+		showRoundIntro(boolean, round);
+        ShowRoundIntroClientRpc(boolean, round);
+	}
+
+	[ClientRpc]
+	void ShowRoundIntroClientRpc(bool boolean, int round) {
+		if (IsServer) return;
+        showRoundIntro(boolean, round);
+	}
+
+    void showRoundIntro(bool boolean, int round) {
+        if (boolean)
+            updRoundNumRef(round);
+        roundIntroRef.SetActive(boolean);
+	}
+
+    private void updRoundNumRef(int round) {
         SpriteRenderer renderer = roundNumRef.GetComponent<SpriteRenderer>();
-        renderer.sprite = roundNumImg[currentRound - 1];
+        renderer.sprite = roundNumImg[round - 1];
     }
 
     private IEnumerator roundIntroDelay() {
         yield return new WaitForSeconds(4f);
-        roundIntroRef.SetActive(false);
-        pig.startMovement();
-        man.startMovement();
+        ShowRoundIntroServerRpc(false, 0);
+        pig.StartMovementServerRpc();
+        man.StartMovementServerRpc();
     }
 
     private IEnumerator UnlockRoundTransition()
@@ -105,8 +164,8 @@ public class GameManager : MonoBehaviour
 
     public void handleCollision() {
 
-        pig.stopMovement();
-        man.stopMovement();
+        pig.StopMovementServerRpc();
+        man.StopMovementServerRpc();
         
         // Start the coroutine to handle the delay before starting a  new round or ending a game
         StartCoroutine(HandleCollisionWithDelay());
@@ -157,8 +216,8 @@ public class GameManager : MonoBehaviour
     {
         if (player != null)
         {
-            player.transform.position = startPos;
-            player.resetState(); // Ensure the player script has a method for resetting lives or other states
+            // player.transform.position = startPos;
+            player.ResetStateServerRpc(startPos); // Ensure the player script has a method for resetting lives or other states
         }
     }
 
