@@ -17,19 +17,19 @@ public class Fade : MonoBehaviour
 
         // Start the fading process
         StartCoroutine(DoFade());
-
-        // Move to the next scene
-        SceneManager.LoadScene("YouAreThe");
     }
 
     IEnumerator DoFade(){
         CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
         while (canvasGroup.alpha<1){
-            canvasGroup.alpha += Time.deltaTime / 2;
+            canvasGroup.alpha += Time.deltaTime / 3;
             yield return null;
         }
 
         canvasGroup.interactable = false;
+        
+        // Move to the next scene
+        SceneManager.LoadScene("YouAreThe");
         yield return null;
     }
 }

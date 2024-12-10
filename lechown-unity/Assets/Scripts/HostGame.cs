@@ -4,6 +4,7 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class HostGame : MonoBehaviour
 {
@@ -22,9 +23,26 @@ public class HostGame : MonoBehaviour
     // Max number of players allowed (host + 1 client)
     private const int MaxPlayers = 2;
 
+    // Dictionary to store roles mapped to client IDs
+    private Dictionary<ulong, Role> clientRoles = new Dictionary<ulong, Role>();
+
+    public enum Role { Pig, Man }
+
+    public static HostGame Instance { get; private set; }
+
 
     public void Awake()
     {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+
         currentPlayerCount = GetPlayerCount().ToString();
         playerTemplate.gameObject.SetActive(false);
 
@@ -63,7 +81,7 @@ public class HostGame : MonoBehaviour
 
         startButton.onClick.AddListener(() =>
         {
-            string scene = "Main Scene";
+            string scene = "randomGen";
             NetworkManager.Singleton.SceneManager.LoadScene(scene, LoadSceneMode.Single);
         });
     } 
@@ -136,6 +154,13 @@ public class HostGame : MonoBehaviour
             // Disconnect the client if the max number of players is exceeded
             NetworkManager.Singleton.DisconnectClient(clientId);
             Debug.Log($"Client {clientId} was disconnected because the maximum number of players has been reached.");
+            return;
+        }
+
+        // Assign roles when a new client connects
+        if (NetworkManager.Singleton.IsHost)
+        {
+            AssignRoles();
         }
 
         UpdatePlayerList();
@@ -169,4 +194,57 @@ public class HostGame : MonoBehaviour
             index++;
         }
     }
+
+    // Method to assign roles to host and client
+    private void AssignRoles()
+    {
+        // Randomly assign roles for host and client
+        int randomRole = Random.Range(0, 2);
+
+        // Assign roles based on random value
+        if (randomRole == 0)
+        {
+            clientRoles[NetworkManager.Singleton.LocalClientId] = Role.Pig; // Host's role
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.ClientId != NetworkManager.Singleton.LocalClientId)
+                {
+                    clientRoles[client.ClientId] = Role.Man; // Assign to the first client
+                    break;
+                }
+            }
+        }
+        else
+        {
+            clientRoles[NetworkManager.Singleton.LocalClientId] = Role.Man; // Host's role
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.ClientId != NetworkManager.Singleton.LocalClientId)
+                {
+                    clientRoles[client.ClientId] = Role.Pig; // Assign to the first client
+                    break;
+                }
+            }
+        }
+
+        Debug.Log("Roles assigned:");
+        foreach (var entry in clientRoles)
+        {
+            Debug.Log($"Client {entry.Key} is {entry.Value}");
+        }
+    }
+
+    public Role GetRole(ulong clientId)
+    {
+        if (clientRoles.TryGetValue(clientId, out Role role))
+        {
+            return role;
+        }
+        else
+        {
+            Debug.LogWarning($"Role for Client ID {clientId} not found!");
+            return default; // Or handle appropriately
+        }
+    }
+
 }
