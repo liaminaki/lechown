@@ -4,11 +4,18 @@ using UnityEngine.SceneManagement;
 public class Sounds : MonoBehaviour
 {
     private static Sounds instance;
+    public AudioSource abgmtsource;
     public AudioSource bgmSource;  // Reference to the AudioSource component
     public AudioClip[] bgmTracks;  // Array of music tracks
     private string currentSceneName;
 
     public AudioClip buttonClickAudio;
+    public AudioClip turn;
+    public AudioClip collision;
+    public AudioClip Win;
+    public AudioClip Lose;
+    public AudioClip play;
+
     public AudioSource sfxSource;
     void Awake()
     {
@@ -36,6 +43,7 @@ public class Sounds : MonoBehaviour
         // Check if the scene has changed
         if (SceneManager.GetActiveScene().name != currentSceneName)
         {
+            print("working");
             currentSceneName = SceneManager.GetActiveScene().name;
             PlayMusicForScene(currentSceneName);
         }
@@ -46,6 +54,7 @@ public class Sounds : MonoBehaviour
     {
         // Find the track for the scene (you can expand this to support more scenes)
         AudioClip newTrack = null;
+        bool rolegen = false;
 
         switch (sceneName)
         {
@@ -55,6 +64,14 @@ public class Sounds : MonoBehaviour
             case "Main Scene":
                 newTrack = bgmTracks[1]; // Example: Menu Scene music
                 break;
+            case "randomGen":
+                newTrack = bgmTracks[2];
+                rolegen = true;
+                break;
+            case "YouAreThe":
+                newTrack = bgmTracks[3];
+                rolegen = true;
+                break;
             // Add more cases for other scenes as needed
             default:
                 newTrack = bgmTracks[0]; // Default track
@@ -63,18 +80,57 @@ public class Sounds : MonoBehaviour
 
         if (newTrack != null && bgmSource != null)
         {
-            bgmSource.clip = newTrack;  // Change the music clip
-            bgmSource.Play();           // Play the new music
+            if (rolegen)
+            {
+                abgmtsource.clip = newTrack;
+                abgmtsource.Play();
+            }
+            else
+            {
+                bgmSource.clip = newTrack;  // Change the music clip
+                bgmSource.Play();           // Play the new music
+            }
         }
         else
         {
             Debug.LogError("No AudioSource or Music Track assigned.");
         }
+        rolegen = false;
     }
 
     public void PlayButtonClickAudio()
     {
         sfxSource.clip = buttonClickAudio;
+        sfxSource.Play();
+    }
+
+    public void PlayWin()
+    {
+        sfxSource.clip = Win;
+        sfxSource.Play();
+    }
+
+    public void PlayLose()
+    {
+        sfxSource.clip = Lose;
+        sfxSource.Play();
+    }
+
+    public void PlayCollision()
+    {
+        sfxSource.clip = collision;
+        sfxSource.Play();
+    }
+
+    public void PlayTurn()
+    {
+        sfxSource.clip = turn;
+        sfxSource.Play();
+    }
+
+    public void PlayPlay()
+    {
+        sfxSource.clip = play;
         sfxSource.Play();
     }
 }
