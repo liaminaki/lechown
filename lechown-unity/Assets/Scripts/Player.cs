@@ -28,8 +28,13 @@ public class Player : NetworkBehaviour {
 	// Current Wall
 	Collider2D wall;
 
+	// Vector2 lastWallEnd;
+
 	// Last Wall's End
-	Vector2 lastWallEnd;
+    private NetworkVariable<Vector2> lastWallEnd = new NetworkVariable<Vector2>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    // Wall Network ID
+    private NetworkVariable<ulong> wallNetworkId = new NetworkVariable<ulong>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
 	// Previous input
 	private KeyCode prevKey;
@@ -95,6 +100,8 @@ public class Player : NetworkBehaviour {
 		animator = GetComponent<Animator>();
 		updateLivesUI();
 		stopMovement();
+
+		wallNetworkId.OnValueChanged += OnWallNetworkIdChanged;
 	}
 	
 	// Update is called once per frame
@@ -124,7 +131,23 @@ public class Player : NetworkBehaviour {
 			updateAnim(moveX, moveY);
 		}
 
-		fitColliderBetween (wall, lastWallEnd, transform.position);
+		// Ensure the collider is updated on every frame, both server and client
+		if (wall != null) {
+			// Adjust the collider's fit every frame using lastWallEnd and current position
+			FitColliderServerRpc(lastWallEnd.Value, transform.position);
+		}
+	}
+
+	[ServerRpc(RequireOwnership = false)]
+	public void StartMovementServerRpc() {
+		startMovement();
+		StartMovementClientRpc();
+	}
+
+	[ClientRpc]
+	void StartMovementClientRpc() {
+		if (IsServer) return;
+		startMovement();
 	}
 
 	public void startMovement() {
@@ -132,7 +155,22 @@ public class Player : NetworkBehaviour {
 		moveUp();
 	}
 
-	public void resetState() {
+	[ServerRpc(RequireOwnership = false)]
+	public void ResetStateServerRpc(Vector2 startPos) {
+		resetState(startPos);
+		ResetStateClientRpc(startPos);
+	}
+
+	[ClientRpc]
+	void ResetStateClientRpc(Vector2 startPos) {
+		if (IsServer) return;
+		resetState(startPos);
+	}
+
+	public void resetState(Vector2 startPos) {
+		// Star pos
+		transform.position = startPos;
+
 		// Initial Movement Direction
 		moveX = 0f;
 		moveY = 0f;
@@ -157,20 +195,43 @@ public class Player : NetworkBehaviour {
 		
 	}
 
-	void spawnWall() {
-		if (!IsOwner) return; // Ensure only the owner spawns the wall
+	[ServerRpc(RequireOwnership = false)]
+    private void SpawnWallServerRpc(Vector2 position, ServerRpcParams rpcParams = default) {
 
-		// Save last wall's position
-		lastWallEnd = transform.position;
+		// Only spawn a wall if we're on the server
+        if (!IsServer) return;
 
-		GameObject g = (GameObject)Instantiate (wallPrefab, transform.position, Quaternion.identity);
-		// NetworkObject networkObject = g.GetComponent<NetworkObject>();
-		// if (networkObject != null) {
-		// 	networkObject.Spawn(true); // Ensure it's visible to all clients
-		// }
-		wall = g.GetComponent<Collider2D>();
+        GameObject wallInstance = Instantiate(wallPrefab, position, Quaternion.identity);
+        NetworkObject wallNetworkObject = wallInstance.GetComponent<NetworkObject>();
+		wallInstance.tag = "Wall";
+        wallNetworkObject.Spawn();
 
-		g.tag = "Wall";
+		// Get the collider of the wall (to fit between positions)
+    	// wall = wallInstance.GetComponent<Collider2D>();
+
+        // Update wall and lastWallEnd
+        wallNetworkId.Value = wallNetworkObject.NetworkObjectId;
+        lastWallEnd.Value = position;
+
+		
+
+	}
+
+	[ServerRpc(RequireOwnership = false)]
+	void FitColliderServerRpc(Vector2 lastWallEndPosition, Vector3 playerPosition) {
+		if (!IsServer) return;
+
+		// Update the collider based on the last wall position and player position
+		if (wall != null) {
+			fitColliderBetween(wall, lastWallEndPosition, playerPosition);
+		}
+
+	}
+
+	void OnWallNetworkIdChanged(ulong previousValue, ulong newValue) {
+		if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(newValue, out NetworkObject wallObject)) {
+			wall = wallObject.GetComponent<Collider2D>();
+		}
 	}
 
 	void fitColliderBetween(Collider2D co, Vector2 a, Vector2 b) {
@@ -187,20 +248,47 @@ public class Player : NetworkBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D co) {
+
+		// Ensure this only runs on the server or host
+        if (!IsServer) return;
+
 		if (co != wall && !isDead) { // && canMove // canMove = !isDead, this make sure it wont trigger again when alr dead
-			OnPlayerDead();
+			// OnPlayerDead();
+			OnPlayerDeadServerRpc();
 			GameManager.Instance.handleCollision();
 		}
+	}
+
+	// ServerRpc that handles the death logic
+	[ServerRpc(RequireOwnership = false)]
+	void OnPlayerDeadServerRpc()
+	{
+		// Call the death handling function on the server
+		OnPlayerDead();
+		
+		// Optionally, use a ClientRpc to update other clients (for example, to show a death animation)
+		OnPlayerDeadClientRpc();
+	}
+
+	[ClientRpc]
+	void OnPlayerDeadClientRpc()
+	{
+		// Only execute on clients, not on the server
+		if (IsServer) return;
+
+		OnPlayerDead();
 	}
 
 	void OnPlayerDead() {
 		animator.SetBool("IsDead", true);
 		isDead = true;
 
+		stopMovement();
+
 		updateAnim(lastMoveX, lastMoveY);
 		reduceLife();
 
-		print("Dead");
+		print("Dead - Server Side");
 	}
 
 	// Updates the game state (call this when a player loses all lives)
@@ -244,8 +332,10 @@ public class Player : NetworkBehaviour {
     }
 
 	void moveUp() {
+		if (!IsOwner) return; 
 		GetComponent<Rigidbody2D>().linearVelocity = Vector2.up * speed;
-		spawnWall ();
+		SpawnWallServerRpc(transform.position);
+		
 		prevKey = upKey;
 
 		moveY = 1f;
@@ -255,8 +345,10 @@ public class Player : NetworkBehaviour {
 	}
 
 	void moveDown() {
+		if (!IsOwner) return; 
 		GetComponent<Rigidbody2D>().linearVelocity = -Vector2.up * speed;
-		spawnWall ();
+		SpawnWallServerRpc(transform.position);
+		
 		prevKey = downKey;
 
 		moveY = -1f;
@@ -266,8 +358,10 @@ public class Player : NetworkBehaviour {
 	}
 
 	void moveLeft() {
+		if (!IsOwner) return; 
 		GetComponent<Rigidbody2D>().linearVelocity = -Vector2.right * speed;
-		spawnWall ();
+		SpawnWallServerRpc(transform.position);
+		
 		prevKey = leftKey;
 
 		moveX = -1f;
@@ -277,8 +371,10 @@ public class Player : NetworkBehaviour {
 	}
 
 	void moveRight() {
+		if (!IsOwner) return; 
 		GetComponent<Rigidbody2D>().linearVelocity = Vector2.right * speed;
-		spawnWall ();
+		SpawnWallServerRpc(transform.position);
+		
 		prevKey = rightKey;
 
 		moveX = 1f;
@@ -287,7 +383,21 @@ public class Player : NetworkBehaviour {
 		lastMoveY = 0f;
 	}
 
-	public void stopMovement() {
+	// ServerRpc that handles stop movement
+	[ServerRpc(RequireOwnership = false)]
+	public void StopMovementServerRpc()
+	{
+		stopMovement();
+		StopMovementClientRpc();
+	}
+
+	[ClientRpc]
+	void StopMovementClientRpc() {
+		if (IsServer) return;
+		stopMovement();
+	}
+	
+	void stopMovement() {
 		canMove = false;
 		GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
 
