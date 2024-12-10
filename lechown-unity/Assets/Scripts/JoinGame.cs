@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Linq;*/
   
 
-public class JoinGame : MonoBehaviour
+public class JoinGame : NetworkBehaviour
 {
     [SerializeField] TextMeshProUGUI inputField;
     [SerializeField] private Button joinGameButton;
