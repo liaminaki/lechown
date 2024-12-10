@@ -14,7 +14,7 @@ public class JoinGame : MonoBehaviour
     [SerializeField] TextMeshProUGUI inputField;
     [SerializeField] private Button joinGameButton;
     [SerializeField] TextMeshProUGUI statusText;
-/*    [SerializeField] UnityTransport transport;*/
+    [SerializeField] UnityTransport transport;
     [SerializeField] private Button backButton;
     [SerializeField] GameObject gameOption;
     [SerializeField] GameObject gameLobby;
@@ -64,14 +64,14 @@ public class JoinGame : MonoBehaviour
             return;
         }*/
 
-/*        if (transport != null)
-        {*//*
+       if (transport != null)
+        {
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
                 iPAddress,  // IP Address inputted
                 7777        // Port
                 );
-            Debug.Log($"Attempting to connect to host at {iPAddress}");*/
-/*        }*/
+            Debug.Log($"Attempting to connect to host at {iPAddress}");
+        }
 
         // Start the client and try to connect to the server (host)
         NetworkManager.Singleton.StartClient();

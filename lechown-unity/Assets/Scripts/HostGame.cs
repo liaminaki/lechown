@@ -128,10 +128,10 @@ public class HostGame : NetworkBehaviour
         }
 
         // Configure Unity Transport to Use the Device IP Address
-        /*NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
             localIPAddress, // IP Address of the Device
             7777            // Port
-        );*/
+        );
 
         // Start the host
         NetworkManager.Singleton.StartHost();
