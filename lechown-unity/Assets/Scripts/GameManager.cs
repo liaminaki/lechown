@@ -287,4 +287,16 @@ void displayResult(ResultType pigResult, ResultType manResult) {
             resultTypes[i].SetActive(i == (int)result);
         }
     }
+
+    public void GoHome()
+    {
+        // Clean up the network session
+        NetworkManager.Singleton.Shutdown();
+
+        // Destroy the NetworkManager to avoid carrying it into the menu scene
+        Destroy(NetworkManager.Singleton.gameObject);
+
+        // Load the menu scene
+        SceneController.Instance.SwitchScene("Home");
+    }
 }
