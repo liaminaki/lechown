@@ -20,13 +20,13 @@ public class PlayerSpawner : NetworkBehaviour
 
         // Initialize the list of available prefabs
         availablePrefabs = new List<GameObject> { pigPrefab, manPrefab };
-        OnNetworkSpawn();
     }
 
     public override void OnNetworkSpawn()
     {
         if (IsServer) // Only the server spawns players
         {
+            Debug.Log("Client Count: " + NetworkManager.Singleton.ConnectedClients.Count);
             // Ensure there are connected clients
             if (NetworkManager.Singleton.ConnectedClients.Count > 0)
             {

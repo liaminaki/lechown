@@ -45,6 +45,8 @@ public class RoleGeneration : MonoBehaviour
                 break;
         }
 
+        
+
         string scene = "Main Scene";
         NetworkManager.Singleton.SceneManager.LoadScene(scene, LoadSceneMode.Single);
     }

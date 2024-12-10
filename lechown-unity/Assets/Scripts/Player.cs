@@ -9,7 +9,7 @@ public class Player : NetworkBehaviour {
 	// Lives
 	private const int MAX_LIVES = 3;
 	public int lives = MAX_LIVES;
-	private GameObject[] livesUI;
+	public GameObject[] livesUI;
 	[SerializeField] private Sprite lifeUI;
 	[SerializeField] private Sprite noLifeUI;
 
@@ -57,6 +57,29 @@ public class Player : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {
 
+		InitLivesUIServerRpc();
+
+		getSprite();
+		animator = GetComponent<Animator>();
+		updateLivesUI();
+		stopMovement();
+
+		wallNetworkId.OnValueChanged += OnWallNetworkIdChanged;
+	}
+
+	[ServerRpc(RequireOwnership = false)]
+	void InitLivesUIServerRpc() {
+		InitLivesUI();
+		InitLivesUIClientRpc();
+	}
+
+	[ClientRpc]
+	void InitLivesUIClientRpc() {
+		if (IsServer) return;
+		InitLivesUI();
+	}
+	
+	void InitLivesUI() {
 		if (gameObject.name == "man(Clone)"){
 			//find the "man lives Game Object
 			GameObject manLives = GameObject.Find("man lives");
@@ -95,13 +118,6 @@ public class Player : NetworkBehaviour {
 				Debug.Log("Pig Lives is null");
 			}
 		}
-
-		getSprite();
-		animator = GetComponent<Animator>();
-		updateLivesUI();
-		stopMovement();
-
-		wallNetworkId.OnValueChanged += OnWallNetworkIdChanged;
 	}
 	
 	// Update is called once per frame

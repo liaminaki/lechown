@@ -17,11 +17,11 @@ public class GameManager : NetworkBehaviour
     private bool isRoundTransitioning = false;
 
     [Header("Man")]
-    private Player man;
+    public Player man;
     private Vector2 manStartPos = new Vector2(10, 0);
     
     [Header("Pig")]
-    private Player pig;
+    public Player pig;
     private Vector2 pigStartPos = new Vector2(-10, 0);
 
     [Header("Results")]
@@ -104,7 +104,9 @@ public class GameManager : NetworkBehaviour
         if (isRoundTransitioning) return; // Prevent simultaneous transitions
 
         isRoundTransitioning = true; // Lock transitions
-        currentRound.Value++; 
+
+        if(IsServer)
+            currentRound.Value++; 
 
         // Wait for Round intro screen with countdown
         StartCoroutine(roundIntroDelay());

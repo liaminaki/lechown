@@ -24,7 +24,7 @@ public class HostGame : NetworkBehaviour
     // Max number of players allowed (host + 1 client)
     private const int MaxPlayers = 2;
 
-    public NetworkList<PlayerName> playerNames; // Synchronizes player names across network
+    public NetworkList<FixedString64Bytes> playerNames; // Synchronizes player names across network
 
     // Dictionary to store roles mapped to client IDs
     private Dictionary<ulong, Role> clientRoles = new Dictionary<ulong, Role>();
@@ -49,7 +49,7 @@ public class HostGame : NetworkBehaviour
         playerTemplate.gameObject.SetActive(false);
 
         // Initialize the NetworkList
-        playerNames = new NetworkList<PlayerName>();
+        playerNames = new NetworkList<FixedString64Bytes>();
 
         if (playerNames == null)
         {
@@ -67,10 +67,10 @@ public class HostGame : NetworkBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
 
         // If this instance is the host, add the host's username to the playerUsernames
-        if (NetworkManager.Singleton.IsHost)
-        {
-            AddHostUsername();
-        }
+        // if (NetworkManager.Singleton.IsHost)
+        // {
+        //     AddHostUsername();
+        // }
 
         // Ensure the player list is updated even if the client is already connected
         if (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost)
@@ -80,25 +80,25 @@ public class HostGame : NetworkBehaviour
 
     }
 
-    private void AddHostUsername()
-    {
-        // Add the host's username to the playerNames list
-        Debug.Log("Lechown: " + Lechown.Instance.Username);
-        PlayerName hostName = new PlayerName(new FixedString64Bytes(Lechown.Instance.Username)); // Replace with your host's username logic
-        Debug.Log("name: " + hostName.ToString());
+    // private void AddHostUsername()
+    // {
+    //     // Add the host's username to the playerNames list
+    //     Debug.Log("Lechown: " + Lechown.Instance.Username);
+    //     FixedString64Bytes hostName = new FixedString64Bytes(Lechown.Instance.Username); // Replace with your host's username logic
+    //     Debug.Log("name: " + hostName.ToString());
 
-        if (!playerNames.Contains(hostName))
-        {
-            playerNames.Add(hostName);
-        }
-    }
+    //     if (!playerNames.Contains(hostName))
+    //     {
+    //         playerNames.Add(hostName);
+    //     }
+    // }
 
     private void Update()
     {
         playerCount.text = $"{GetPlayerCount()}/{MaxPlayers} PLAYERS";
 
         //Disable Start button if less than 2 players are connected
-        startButton.interactable = playerNames.Count == MaxPlayers;
+        startButton.interactable = GetPlayerCount() == MaxPlayers;
 
         backButton.onClick.AddListener(() =>
         {
@@ -180,7 +180,7 @@ public class HostGame : NetworkBehaviour
         // Only add usernames for the local client (self)
         if (clientId == NetworkManager.Singleton.LocalClientId)
         {
-            PlayerName username = new PlayerName(new FixedString64Bytes(Lechown.Instance.Username)); // Replace with client-specific username logic
+            FixedString64Bytes username = new FixedString64Bytes(Lechown.Instance.Username); // Replace with client-specific username logic
             if (!playerNames.Contains(username))
             {
                 playerNames.Add(username);
@@ -208,7 +208,7 @@ public class HostGame : NetworkBehaviour
             {
                 if (client.ClientId == clientId)
                 {
-                    PlayerName username = new PlayerName(new FixedString64Bytes(Lechown.Instance.Username)); // Replace with actual username logic
+                    FixedString64Bytes username = new FixedString64Bytes(Lechown.Instance.Username); // Replace with actual username logic
                     if (playerNames.Contains(username))
                     {
                         playerNames.Remove(username);
@@ -246,7 +246,7 @@ public class HostGame : NetworkBehaviour
         }
     }
 
-    private void OnPlayerListChanged(NetworkListEvent<PlayerName> changeEvent)
+    private void OnPlayerListChanged(NetworkListEvent<FixedString64Bytes> changeEvent)
     {
         UpdatePlayerList();
     }
