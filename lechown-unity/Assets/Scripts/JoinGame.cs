@@ -27,7 +27,7 @@ public class JoinGame : NetworkBehaviour
     private void Awake()
     {
         statusText.gameObject.SetActive(false);
-        joinGameButton.onClick.AddListener(() =>
+        joinGameButton.onClick.AddListener(() => 
         {
             JoinGameClicked();
         });
@@ -113,7 +113,7 @@ public class JoinGame : NetworkBehaviour
         if (clientId == NetworkManager.Singleton.LocalClientId)
         {
             // Send the player's name and initial status to the host
-            SendPlayerNameToHost();
+            //SendPlayerNameToHost();
         }
 
         gameLobby.SetActive(true);
@@ -129,19 +129,19 @@ public class JoinGame : NetworkBehaviour
         statusText.text = "Failed to connect to host.";
     }
 
-    private void SendPlayerNameToHost()
-    {
-        if (NetworkManager.Singleton.IsConnectedClient)
-        {
-            AddPlayerServerRpc("Client", "NOT READY");
-        }
-    }
+    // private void SendPlayerNameToHost()
+    // {
+    //     if (NetworkManager.Singleton.IsConnectedClient)
+    //     {
+    //         AddPlayerServerRpc("Client", "NOT READY");
+    //     }
+    // }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void AddPlayerServerRpc(string playerName, string status)
-    {
-        Debug.Log($"Player {playerName} joined the game with status: {status}");
-    }
+    // [ServerRpc(RequireOwnership = false)]
+    // private void AddPlayerServerRpc(string playerName, string status)
+    // {
+    //     Debug.Log($"Player {playerName} joined the game with status: {status}");
+    // }
 
     // Make sure to clean up
     /*    private void OnDestroy()

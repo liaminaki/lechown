@@ -119,6 +119,8 @@ public class HostGame : NetworkBehaviour
             string scene = "randomGen";
             NetworkManager.Singleton.SceneManager.LoadScene(scene, LoadSceneMode.Single);
         });
+
+        UpdatePlayerList();
     } 
 
     public void StartHostGame()
@@ -251,7 +253,7 @@ public class HostGame : NetworkBehaviour
         if (!playerNames.ContainsKey(clientId))
         {
             playerNames.Add(clientId, username);
-            UpdatePlayerList();
+            //UpdatePlayerList();
         }
     }
 
@@ -260,7 +262,7 @@ public class HostGame : NetworkBehaviour
         if (playerNames.ContainsKey(clientId))
         {
             playerNames.Remove(clientId);
-            UpdatePlayerList();
+            //UpdatePlayerList();
         }
     }
 
@@ -277,14 +279,14 @@ public class HostGame : NetworkBehaviour
         float templateHeight = 120f;
         int index = 0;
 
-        foreach (var player in playerNames)
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
             Transform playerTransform = Instantiate(playerTemplate, playerListContainer);
             RectTransform playerRectTransform = playerTransform.GetComponent<RectTransform>();
             playerRectTransform.anchoredPosition = new Vector2(0, -templateHeight * index);
             playerTransform.gameObject.SetActive(true);
 
-            playerTransform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = player.Value;
+            playerTransform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = "Player " + client.ClientId;
             index++;
         }
     }
