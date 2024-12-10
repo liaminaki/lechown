@@ -5,13 +5,14 @@ using TMPro;
 using UnityEngine.UI;
 using System.Net;
 using System.Net.Sockets;
+using System;
 /*using System.Text.RegularExpressions;
 using System.Linq;*/
   
 
 public class JoinGame : NetworkBehaviour
 {
-    [SerializeField] TextMeshProUGUI inputField;
+    [SerializeField] TMP_InputField inputField;
     [SerializeField] private Button joinGameButton;
     [SerializeField] TextMeshProUGUI statusText;
     [SerializeField] UnityTransport transport;
@@ -41,7 +42,7 @@ public class JoinGame : NetworkBehaviour
 
     private void JoinGameClicked()
     {
-        iPAddress = inputField.text.Trim();
+        iPAddress = inputField.text;
         Debug.Log("current IP: " +iPAddress);
 
         /*if (string.IsNullOrEmpty(iPAddress))
@@ -66,23 +67,28 @@ public class JoinGame : NetworkBehaviour
 
        if (transport != null)
         {
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
-                iPAddress,  // IP Address inputted
-                7777        // Port
-                );
-            Debug.Log($"Attempting to connect to host at {iPAddress}");
+            if(IPAddress.TryParse(iPAddress, out _)){
+                transport.ConnectionData.Address = iPAddress;
+                transport.ConnectionData.Port = 7777;
+                Debug.Log($"Attempting to connect to host at {iPAddress}");
+            }
+            else{
+                Debug.Log("Invalid IP Address");
+            }
         }
 
-        // Start the client and try to connect to the server (host)
-        NetworkManager.Singleton.StartClient();
-
-        // Optionally show a "Connecting..." message while the client is attempting to join.
-        statusText.gameObject.SetActive(true);
-        statusText.color = Color.green;
-        statusText.text = "Connecting...";
-
-
-
+        try{
+            // Start the client and try to connect to the server (host)
+            NetworkManager.Singleton.StartClient();
+            // Optionally show a "Connecting..." message while the client is attempting to join.
+            statusText.gameObject.SetActive(true);
+            statusText.color = Color.green;
+            statusText.text = "Connecting...";
+        }
+        catch(Exception e){
+            Debug.LogError($"Failed to start client: {e.Message}");
+        }
+        
         // Register network events to check if the connection is successful or fails
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
