@@ -9,6 +9,12 @@ public class Sounds : MonoBehaviour
     private string currentSceneName;
 
     public AudioClip buttonClickAudio;
+    public AudioClip turn;
+    public AudioClip collision;
+    public AudioClip Win;
+    public AudioClip Lose;
+    public AudioClip play;
+
     public AudioSource sfxSource;
     void Awake()
     {
@@ -75,6 +81,36 @@ public class Sounds : MonoBehaviour
     public void PlayButtonClickAudio()
     {
         sfxSource.clip = buttonClickAudio;
+        sfxSource.Play();
+    }
+
+    public void PlayWin()
+    {
+        sfxSource.clip = Win;
+        sfxSource.Play();
+    }
+
+    public void PlayLose()
+    {
+        sfxSource.clip = Lose;
+        sfxSource.Play();
+    }
+
+    public void PlayCollision()
+    {
+        sfxSource.clip = collision;
+        sfxSource.Play();
+    }
+
+    public void PlayTurn()
+    {
+        sfxSource.clip = turn;
+        sfxSource.Play();
+    }
+
+    public void PlayPlay()
+    {
+        sfxSource.clip = play;
         sfxSource.Play();
     }
 }

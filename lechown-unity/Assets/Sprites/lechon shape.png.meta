@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      lechon shape_0: 686069527451667831
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
