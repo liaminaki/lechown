@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class RoleGeneration : MonoBehaviour
 {
@@ -43,5 +44,8 @@ public class RoleGeneration : MonoBehaviour
                 manCharacter.SetActive(false);
                 break;
         }
+
+        string scene = "Main Scene";
+        NetworkManager.Singleton.SceneManager.LoadScene(scene, LoadSceneMode.Single);
     }
 }

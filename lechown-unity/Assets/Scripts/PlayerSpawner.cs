@@ -32,7 +32,9 @@ public class PlayerSpawner : NetworkBehaviour
             {
                 foreach (var client in NetworkManager.Singleton.ConnectedClients)
                 {
-                    SpawnPlayer(client.Key);
+                    // Get the role of the client and spawn the appropriate player prefab
+                    HostGame.Role clientRole = HostGame.Instance.GetRole(client.Key);
+                    SpawnPlayer(client.Key, clientRole);
                 }
             }
             else
@@ -42,37 +44,42 @@ public class PlayerSpawner : NetworkBehaviour
         }
     }
 
-    private void SpawnPlayer(ulong clientId)
+    private void SpawnPlayer(ulong clientId, HostGame.Role clientRole)
     {
-        if (availablePrefabs.Count == 0)
+        GameObject playerPrefab = null;
+
+        // Select the player prefab based on the client's role
+        switch (clientRole)
         {
-            Debug.LogError("No prefabs available for spawning players.");
-            return;
+            case HostGame.Role.Pig:
+                playerPrefab = pigPrefab;
+                break;
+
+            case HostGame.Role.Man:
+                playerPrefab = manPrefab;
+                break;
+
+            default:
+                Debug.LogError($"Unknown role: {clientRole}");
+                return;
         }
 
-        // Randomly choose a prefab from the available list
-        int randomIndex = Random.Range(0, availablePrefabs.Count);
-        GameObject playerPrefab = availablePrefabs[randomIndex];
-
-        // Remove the chosen prefab from the list so it can't be reassigned
-        availablePrefabs.RemoveAt(randomIndex);
-
-        // Debug log which prefab was selected
-        Debug.Log($"Selected Player Prefab: {playerPrefab.name}");
-
-        // Instantiate the player prefab
-        GameObject playerInstance = Instantiate(playerPrefab);
-
-        // Assign the NetworkObject and spawn it
-        NetworkObject networkObject = playerInstance.GetComponent<NetworkObject>();
-        if (networkObject != null)
+        if (playerPrefab != null)
         {
-            networkObject.SpawnAsPlayerObject(clientId);
-            Debug.Log($"IsOwner: {networkObject.IsOwner}");
-        }
-        else
-        {
-            Debug.LogError("Player Prefab is missing a NetworkObject component!");
+            // Instantiate the correct player prefab based on the role
+            GameObject playerInstance = Instantiate(playerPrefab);
+
+            // Assign the NetworkObject and spawn it
+            NetworkObject networkObject = playerInstance.GetComponent<NetworkObject>();
+            if (networkObject != null)
+            {
+                networkObject.SpawnAsPlayerObject(clientId);
+                Debug.Log($"Spawned player with role {clientRole} as {playerPrefab.name}. IsOwner: {networkObject.IsOwner}");
+            }
+            else
+            {
+                Debug.LogError("Player Prefab is missing a NetworkObject component!");
+            }
         }
     }
 }
