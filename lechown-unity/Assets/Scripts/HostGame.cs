@@ -5,8 +5,9 @@ using Unity.Netcode.Transports.UTP;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using Unity.Collections;
 
-public class HostGame : MonoBehaviour
+public class HostGame : NetworkBehaviour
 {
 
     [SerializeField] TextMeshProUGUI iPAddress;
@@ -23,14 +24,15 @@ public class HostGame : MonoBehaviour
     // Max number of players allowed (host + 1 client)
     private const int MaxPlayers = 2;
 
+    public NetworkList<PlayerName> playerNames; // Synchronizes player names across network
+
     // Dictionary to store roles mapped to client IDs
     private Dictionary<ulong, Role> clientRoles = new Dictionary<ulong, Role>();
 
     public enum Role { Pig, Man }
 
     public static HostGame Instance { get; private set; }
-
-
+    
     public void Awake()
     {
         if (Instance != null)
@@ -46,7 +48,29 @@ public class HostGame : MonoBehaviour
         currentPlayerCount = GetPlayerCount().ToString();
         playerTemplate.gameObject.SetActive(false);
 
+        // Initialize the NetworkList
+        playerNames = new NetworkList<PlayerName>();
+
+        if (playerNames == null)
+        {
+            Debug.LogError("playerNames NetworkList is not initialized!");
+        }
+        else
+        {
+            Debug.Log("playerNames NetworkList is initialized.");
+            Debug.Log("NetworkList contains " + playerNames.Count + " items.");
+        }
+
+        playerNames.OnListChanged += OnPlayerListChanged;
+
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+
+        // If this instance is the host, add the host's username to the playerUsernames
+        if (NetworkManager.Singleton.IsHost)
+        {
+            AddHostUsername();
+        }
 
         // Ensure the player list is updated even if the client is already connected
         if (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost)
@@ -56,12 +80,25 @@ public class HostGame : MonoBehaviour
 
     }
 
+    private void AddHostUsername()
+    {
+        // Add the host's username to the playerNames list
+        Debug.Log("Lechown: " + Lechown.Instance.Username);
+        PlayerName hostName = new PlayerName(new FixedString64Bytes(Lechown.Instance.Username)); // Replace with your host's username logic
+        Debug.Log("name: " + hostName.ToString());
+
+        if (!playerNames.Contains(hostName))
+        {
+            playerNames.Add(hostName);
+        }
+    }
+
     private void Update()
     {
-        playerCount.text = GetPlayerCount().ToString() + "/2 PLAYERS";
+        playerCount.text = $"{GetPlayerCount()}/{MaxPlayers} PLAYERS";
 
         //Disable Start button if less than 2 players are connected
-        startButton.interactable = GetPlayerCount() == 2;
+        startButton.interactable = playerNames.Count == MaxPlayers;
 
         backButton.onClick.AddListener(() =>
         {
@@ -70,14 +107,7 @@ public class HostGame : MonoBehaviour
         });
 
         // Check if this client is the host and show/hide the start button
-        if (NetworkManager.Singleton.IsHost)
-        {
-            startButton.gameObject.SetActive(true);  // Show start button for host
-        }
-        else
-        {
-            startButton.gameObject.SetActive(false); // Hide start button for non-host clients
-        }
+        startButton.gameObject.SetActive(NetworkManager.Singleton.IsHost);
 
         startButton.onClick.AddListener(() =>
         {
@@ -108,7 +138,6 @@ public class HostGame : MonoBehaviour
         iPAddress.text = localIPAddress;
         Debug.Log("Host started successfully!");
 
-        UpdatePlayerList();
     }
 
     public void SetIPAddress(string clientInputIPAddress)
@@ -148,19 +177,45 @@ public class HostGame : MonoBehaviour
         // A new client has connected, update the player list
         Debug.Log($"Client {clientId} connected!");
 
-        // Check if the number of connected players exceeds the max allowed
-        if (GetPlayerCount() > MaxPlayers)
+        // Only add usernames for the local client (self)
+        if (clientId == NetworkManager.Singleton.LocalClientId)
         {
-            // Disconnect the client if the max number of players is exceeded
-            NetworkManager.Singleton.DisconnectClient(clientId);
-            Debug.Log($"Client {clientId} was disconnected because the maximum number of players has been reached.");
-            return;
+            PlayerName username = new PlayerName(new FixedString64Bytes(Lechown.Instance.Username)); // Replace with client-specific username logic
+            if (!playerNames.Contains(username))
+            {
+                playerNames.Add(username);
+            }
         }
-
+        
         // Assign roles when a new client connects
         if (NetworkManager.Singleton.IsHost)
         {
             AssignRoles();
+        }
+
+        UpdatePlayerList();
+    }
+
+    private void OnClientDisconnected(ulong clientId)
+    {
+        Debug.Log($"Client {clientId} disconnected!");
+
+        // If the host detects a disconnection, remove the username from the list
+        if (NetworkManager.Singleton.IsHost)
+        {
+            // Remove the username for the disconnected client
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.ClientId == clientId)
+                {
+                    PlayerName username = new PlayerName(new FixedString64Bytes(Lechown.Instance.Username)); // Replace with actual username logic
+                    if (playerNames.Contains(username))
+                    {
+                        playerNames.Remove(username);
+                    }
+                    break;
+                }
+            }
         }
 
         UpdatePlayerList();
@@ -179,20 +234,21 @@ public class HostGame : MonoBehaviour
 
         // Add players dynamically to the list
         float templateHeight = 120f;
-        int index = 0;
 
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        for (int i = 0; i < playerNames.Count; i++)
         {
             Transform playerTransform = Instantiate(playerTemplate, playerListContainer);
             RectTransform playerRectTransform = playerTransform.GetComponent<RectTransform>();
-            playerRectTransform.anchoredPosition = new Vector2(0, -templateHeight * index);
+            playerRectTransform.anchoredPosition = new Vector2(0, -templateHeight * i);
             playerTransform.gameObject.SetActive(true);
 
-            // Set player name and status
-            playerTransform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = $"Player {index + 1}";
-
-            index++;
+            playerTransform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = playerNames[i].ToString();
         }
+    }
+
+    private void OnPlayerListChanged(NetworkListEvent<PlayerName> changeEvent)
+    {
+        UpdatePlayerList();
     }
 
     // Method to assign roles to host and client
