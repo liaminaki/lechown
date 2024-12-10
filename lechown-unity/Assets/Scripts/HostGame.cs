@@ -102,6 +102,13 @@ public class HostGame : NetworkBehaviour
 
         backButton.onClick.AddListener(() =>
         {
+            if (NetworkManager.Singleton.IsHost)
+            {
+                // Shut down the host
+                NetworkManager.Singleton.Shutdown();
+                Debug.Log("Host has been shut down.");
+            }
+            
             gameOption.SetActive(true);
             gameObject.SetActive(false);
         });

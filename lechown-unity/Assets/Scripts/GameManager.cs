@@ -68,6 +68,7 @@ public class GameManager : NetworkBehaviour
 
     void Start() {
         InitPlayerObjects();
+        InitializeResultUI();
         showResult(false);
         startNewRound();
         // StartCoroutine(StartNewRoundWithDelay());
@@ -187,28 +188,65 @@ public class GameManager : NetworkBehaviour
 
     }
 
-    public void endGame() {
-        handleResult();
-    }
+public void endGame()
+{   
+    clearWalls();
 
-    void handleResult() {
+    if (IsServer)
+    {
+        // Determine results and send to clients
+        ResultType resultTypeForPig = pig.lives > 0 ? ResultType.Win : (man.lives > 0 ? ResultType.Lose : ResultType.Draw);
+        ResultType resultTypeForMan = man.lives > 0 ? ResultType.Win : (pig.lives > 0 ? ResultType.Lose : ResultType.Draw);
+
+        // Notify clients
+        DisplayResultClientRpc(resultTypeForPig, resultTypeForMan);
+
+        // Handle result display for the server if it is also a player
+        DisplayResultServerRpc(resultTypeForPig, resultTypeForMan);
+    }
+}
+
+[ClientRpc]
+private void DisplayResultClientRpc(ResultType pigResult, ResultType manResult) {
+    if (IsServer) return;
+    displayResult(pigResult, manResult);
+}
+
+[ServerRpc(RequireOwnership = false)]
+private void DisplayResultServerRpc(ResultType pigResult, ResultType manResult) {
+    displayResult(pigResult, manResult);
+    DisplayResultClientRpc(pigResult, manResult);
+}
+
+void displayResult(ResultType pigResult, ResultType manResult) {
+    if (NetworkManager.Singleton.LocalClientId == pig.OwnerClientId)
+        ShowResultUI(pigResult, pig.sprite);
+
+    else if (NetworkManager.Singleton.LocalClientId == man.OwnerClientId)
+        ShowResultUI(manResult, man.sprite);
+}
+
+    // Show the result UI with the appropriate type and sprite
+    void ShowResultUI(ResultType result, Sprite playerSprite)
+    {
         showResult(true);
+
+        // Update the result UI
+        SetResultType(result);
+
         SpriteRenderer renderer = playerSpriteInResult.GetComponent<SpriteRenderer>();
 
-        // Draw
-        if (pig.lives == 0 && man.lives == 0) {
-            SetResultType(ResultType.Draw);
-        }
+        if (result == ResultType.Win || result == ResultType.Lose)
+            renderer.sprite = playerSprite;
 
-        else {
-            SetResultType(ResultType.Win);
+        else 
+            renderer.sprite = null;
 
-            if (pig.lives != 0) 
-                renderer.sprite = pig.sprite;
-            else
-                renderer.sprite = man.sprite;
-        }
-        
+        // Hide the game objects for man and pig
+        man.gameObject.SetActive(false);
+        pig.gameObject.SetActive(false);
+
+
     }
 
     // Resets a player's position and state for the new round
@@ -234,11 +272,31 @@ public class GameManager : NetworkBehaviour
         resultCanvasRef.SetActive(boolean);
     }
 
+    void InitializeResultUI()
+    {
+        for (int i = 0; i < resultTypes.Length; i++)
+        {
+            resultTypes[i].SetActive(false);
+        }
+    }
+
     private void SetResultType(ResultType result)
     {
         for (int i = 0; i < resultTypes.Length; i++)
         {
             resultTypes[i].SetActive(i == (int)result);
         }
+    }
+
+    public void GoHome()
+    {
+        // Clean up the network session
+        NetworkManager.Singleton.Shutdown();
+
+        // Destroy the NetworkManager to avoid carrying it into the menu scene
+        Destroy(NetworkManager.Singleton.gameObject);
+
+        // Load the menu scene
+        SceneController.Instance.SwitchScene("Home");
     }
 }
