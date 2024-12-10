@@ -20,14 +20,12 @@ public class JoinGame : NetworkBehaviour
     [SerializeField] GameObject gameOption;
     [SerializeField] GameObject gameLobby;
 
-    private HostGame hostGameScript;
     string iPAddress;
 
     //private const string IpPattern = @"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
 
     private void Awake()
     {
-        hostGameScript = gameLobby.GetComponent<HostGame>();
         statusText.gameObject.SetActive(false);
         joinGameButton.onClick.AddListener(() =>
         {
@@ -119,7 +117,7 @@ public class JoinGame : NetworkBehaviour
         }
 
         gameLobby.SetActive(true);
-        hostGameScript.SetIPAddress(iPAddress);
+        HostGame.Instance.SetIPAddress(iPAddress);
         gameObject.SetActive(false);
     }
 
