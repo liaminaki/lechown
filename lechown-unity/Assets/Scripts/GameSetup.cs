@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameSetup : MonoBehaviour
 {
     [SerializeField] private Button startHostButton;
     [SerializeField] private Button joinGameButton;
+    [SerializeField] private Button backButton;
     [SerializeField] private GameObject joinGame;
     [SerializeField] private GameObject hostGame;
 
@@ -38,6 +40,11 @@ public class GameSetup : MonoBehaviour
         joinGameButton.onClick.AddListener(() => {
             joinGame.SetActive(true);
             Hide();
+        });
+
+        backButton.onClick.AddListener(() => {
+            string scene = "Home";
+            SceneManager.LoadScene(scene);
         });
     }
 

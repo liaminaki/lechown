@@ -1,6 +1,8 @@
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using System.Collections;
+
 
 public class RoleGeneration : MonoBehaviour
 {
@@ -22,6 +24,8 @@ public class RoleGeneration : MonoBehaviour
 
         // Show the corresponding character for the assigned role
         ShowCharacterForRole(assignedRole);
+
+        StartCoroutine(DelayProgression());
     }
 
     private void ShowCharacterForRole(HostGame.Role role)
@@ -44,8 +48,12 @@ public class RoleGeneration : MonoBehaviour
                 manCharacter.SetActive(false);
                 break;
         }
+    }
 
-        
+    IEnumerator DelayProgression(){
+        Debug.Log("Wait for 4 Seconds");
+
+        yield return new WaitForSeconds(4f);
 
         string scene = "Main Scene";
         NetworkManager.Singleton.SceneManager.LoadScene(scene, LoadSceneMode.Single);

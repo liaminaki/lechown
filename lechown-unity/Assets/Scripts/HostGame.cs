@@ -24,10 +24,11 @@ public class HostGame : NetworkBehaviour
     // Max number of players allowed (host + 1 client)
     private const int MaxPlayers = 2;
 
-    public NetworkList<FixedString64Bytes> playerNames; // Synchronizes player names across network
+    //public NetworkList<FixedString64Bytes> playerNames; // Synchronizes player names across network
 
     // Dictionary to store roles mapped to client IDs
     private Dictionary<ulong, Role> clientRoles = new Dictionary<ulong, Role>();
+    private Dictionary<ulong, string> playerNames = new Dictionary<ulong, string>(); // Stores player names per client ID
 
     public enum Role { Pig, Man }
 
@@ -48,20 +49,17 @@ public class HostGame : NetworkBehaviour
         currentPlayerCount = GetPlayerCount().ToString();
         playerTemplate.gameObject.SetActive(false);
 
-        // Initialize the NetworkList
-        playerNames = new NetworkList<FixedString64Bytes>();
+        // if (playerNames == null)
+        // {
+        //     Debug.LogError("playerNames NetworkList is not initialized!");
+        // }
+        // else
+        // {
+        //     Debug.Log("playerNames NetworkList is initialized.");
+        //     Debug.Log("NetworkList contains " + playerNames.Count + " items.");
+        // }
 
-        if (playerNames == null)
-        {
-            Debug.LogError("playerNames NetworkList is not initialized!");
-        }
-        else
-        {
-            Debug.Log("playerNames NetworkList is initialized.");
-            Debug.Log("NetworkList contains " + playerNames.Count + " items.");
-        }
-
-        playerNames.OnListChanged += OnPlayerListChanged;
+        // playerNames.OnListChanged += OnPlayerListChanged;
 
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
@@ -121,6 +119,8 @@ public class HostGame : NetworkBehaviour
             string scene = "randomGen";
             NetworkManager.Singleton.SceneManager.LoadScene(scene, LoadSceneMode.Single);
         });
+
+        UpdatePlayerList();
     } 
 
     public void StartHostGame()
@@ -144,6 +144,21 @@ public class HostGame : NetworkBehaviour
         NetworkManager.Singleton.StartHost();
         iPAddress.text = localIPAddress;
         Debug.Log("Host started successfully!");
+
+        // // Initialize the NetworkList
+        // playerNames = new NetworkList<FixedString64Bytes>();
+
+        // // Add the host's name to the player list
+        // FixedString64Bytes hostName = new FixedString64Bytes(Lechown.Instance.Username); // Replace with actual host name logic if needed
+        // if (!playerNames.Contains(hostName))
+        // {
+        //     playerNames.Add(hostName);
+        // }
+
+        // Update the player list UI
+        // UpdatePlayerList();
+
+        AddPlayer(NetworkManager.Singleton.LocalClientId, Lechown.Instance.Username);
 
     }
 
@@ -184,15 +199,17 @@ public class HostGame : NetworkBehaviour
         // A new client has connected, update the player list
         Debug.Log($"Client {clientId} connected!");
 
+        AddPlayer(clientId, Lechown.Instance.Username);
+
         // Only add usernames for the local client (self)
-        if (clientId == NetworkManager.Singleton.LocalClientId)
-        {
-            FixedString64Bytes username = new FixedString64Bytes(Lechown.Instance.Username); // Replace with client-specific username logic
-            if (!playerNames.Contains(username))
-            {
-                playerNames.Add(username);
-            }
-        }
+        // if (clientId == NetworkManager.Singleton.LocalClientId)
+        // {
+        //     FixedString64Bytes username = new FixedString64Bytes(Lechown.Instance.Username); // Replace with client-specific username logic
+        //     if (!playerNames.Contains(username))
+        //     {
+        //         playerNames.Add(username);
+        //     }
+        // }
         
         // Assign roles when a new client connects
         if (NetworkManager.Singleton.IsHost)
@@ -200,7 +217,7 @@ public class HostGame : NetworkBehaviour
             AssignRoles();
         }
 
-        UpdatePlayerList();
+        // UpdatePlayerList();
     }
 
     private void OnClientDisconnected(ulong clientId)
@@ -208,55 +225,76 @@ public class HostGame : NetworkBehaviour
         Debug.Log($"Client {clientId} disconnected!");
 
         // If the host detects a disconnection, remove the username from the list
-        if (NetworkManager.Singleton.IsHost)
-        {
-            // Remove the username for the disconnected client
-            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-            {
-                if (client.ClientId == clientId)
-                {
-                    FixedString64Bytes username = new FixedString64Bytes(Lechown.Instance.Username); // Replace with actual username logic
-                    if (playerNames.Contains(username))
-                    {
-                        playerNames.Remove(username);
-                    }
-                    break;
-                }
-            }
-        }
+        // if (NetworkManager.Singleton.IsHost)
+        // {
+        //     // Remove the username for the disconnected client
+        //     foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        //     {
+        //         if (client.ClientId == clientId)
+        //         {
+        //             FixedString64Bytes username = new FixedString64Bytes(Lechown.Instance.Username); // Replace with actual username logic
+        //             if (playerNames.Contains(username))
+        //             {
+        //                 playerNames.Remove(username);
+        //             }
+        //             break;
+        //         }
+        //     }
+        // }
 
-        UpdatePlayerList();
+        // UpdatePlayerList();
+
+        Debug.Log($"Client {clientId} disconnected!");
+        RemovePlayer(clientId);
+    }
+
+    private void AddPlayer(ulong clientId, string username)
+    {
+        if (!playerNames.ContainsKey(clientId))
+        {
+            playerNames.Add(clientId, username);
+            //UpdatePlayerList();
+        }
+    }
+
+    private void RemovePlayer(ulong clientId)
+    {
+        if (playerNames.ContainsKey(clientId))
+        {
+            playerNames.Remove(clientId);
+            //UpdatePlayerList();
+        }
     }
 
     private void UpdatePlayerList()
     {
-        // Clear existing player entries to avoid duplicates
         foreach (Transform child in playerListContainer)
         {
-            if (child != playerTemplate) // Skip the template
+            if (child != playerTemplate)
             {
                 Destroy(child.gameObject);
             }
         }
 
-        // Add players dynamically to the list
         float templateHeight = 120f;
+        int index = 0;
 
-        for (int i = 0; i < playerNames.Count; i++)
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
             Transform playerTransform = Instantiate(playerTemplate, playerListContainer);
             RectTransform playerRectTransform = playerTransform.GetComponent<RectTransform>();
-            playerRectTransform.anchoredPosition = new Vector2(0, -templateHeight * i);
+            playerRectTransform.anchoredPosition = new Vector2(0, -templateHeight * index);
             playerTransform.gameObject.SetActive(true);
 
-            playerTransform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = playerNames[i].ToString();
+            playerTransform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = "Player " + client.ClientId;
+            index++;
         }
     }
 
-    private void OnPlayerListChanged(NetworkListEvent<FixedString64Bytes> changeEvent)
-    {
-        UpdatePlayerList();
-    }
+    // private void OnPlayerListChanged(NetworkListEvent<FixedString64Bytes> changeEvent)
+    // {
+    //     UpdatePlayerList();
+    // }
 
     // Method to assign roles to host and client
     private void AssignRoles()
