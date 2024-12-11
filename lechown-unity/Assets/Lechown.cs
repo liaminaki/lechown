@@ -196,7 +196,7 @@ public class Lechown : MonoBehaviour
         // Load the sound state from PlayerPrefs (default to ON if not set)
         isSoundOn = PlayerPrefs.GetInt("SoundState", 1) == 1;
         UpdateSoundStateUI();
-
+        bgmSource.volume = isSoundOn ? 1f : 0f;
         // // Add listener to sound button
         // if (soundButton != null)
         // {

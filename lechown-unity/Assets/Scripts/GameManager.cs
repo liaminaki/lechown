@@ -3,7 +3,7 @@ using System.Collections;
 using Unity.Netcode;
 
 public class GameManager : NetworkBehaviour
-{   
+{
     public static GameManager Instance { get; private set; } // Static singleton instance
 
     [Header("Rounds")]
@@ -13,13 +13,13 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private GameObject roundNumRef;
     [SerializeField] private GameObject roundIntroRef;
     // Round transition state
-	// Handles when two players collide with each other causing two round skips
+    // Handles when two players collide with each other causing two round skips
     private bool isRoundTransitioning = false;
 
     [Header("Man")]
     public Player man;
     private Vector2 manStartPos = new Vector2(10, 0);
-    
+
     [Header("Pig")]
     public Player pig;
     private Vector2 pigStartPos = new Vector2(-10, 0);
@@ -41,12 +41,12 @@ public class GameManager : NetworkBehaviour
         // Ensure only one instance of GameManager exists
         if (Instance == null)
         {
-            Instance = this;     
+            Instance = this;
 
             if (IsServer)
             {
                 NetworkObject networkObject = GetComponent<NetworkObject>();
-                
+
                 if (networkObject != null)
                 {
                     networkObject.Spawn();
@@ -55,7 +55,7 @@ public class GameManager : NetworkBehaviour
                 {
                     Debug.LogError("GameManager does not have a NetworkObject component or already spawned!");
                 }
-            }   
+            }
         }
         else
         {
@@ -63,10 +63,11 @@ public class GameManager : NetworkBehaviour
             Destroy(gameObject);
             return;
         }
- 
+
     }
 
-    void Start() {
+    void Start()
+    {
         InitPlayerObjects();
         InitializeResultUI();
         showResult(false);
@@ -74,44 +75,49 @@ public class GameManager : NetworkBehaviour
         // StartCoroutine(StartNewRoundWithDelay());
     }
 
-    IEnumerator StartNewRoundWithDelay() {
+    IEnumerator StartNewRoundWithDelay()
+    {
         yield return new WaitForSeconds(1f); // Wait for 1 second
         startNewRound();
     }
 
-    void InitPlayerObjects() {
+    void InitPlayerObjects()
+    {
         //Finding the GameObject for Man/Pig
         GameObject manObject = GameObject.Find("man(Clone)");
         GameObject pigObject = GameObject.Find("pig(Clone)");
 
-        if(manObject != null){
+        if (manObject != null)
+        {
             man = manObject.GetComponent<Player>();
             Debug.Log("Man GameObject Found");
         }
         else
             Debug.Log("GameObject named 'Man' not found!");
 
-        if (pigObject != null){
+        if (pigObject != null)
+        {
             pig = pigObject.GetComponent<Player>();
             Debug.Log("Pig GameObject Found");
-        }   
+        }
         else
             Debug.Log("GameObject named 'Pig' not found!");
     }
 
     // Resets the state for a new round
-    public void startNewRound() {
+    public void startNewRound()
+    {
 
         if (isRoundTransitioning) return; // Prevent simultaneous transitions
 
         isRoundTransitioning = true; // Lock transitions
 
-        if(IsServer)
-            currentRound.Value++; 
+        if (IsServer)
+            currentRound.Value++;
 
         // Wait for Round intro screen with countdown
         StartCoroutine(roundIntroDelay());
-        
+
         ShowRoundIntroServerRpc(true, currentRound.Value);
 
         Debug.Log($"Starting Round {currentRound.Value}");
@@ -122,35 +128,40 @@ public class GameManager : NetworkBehaviour
         // Reset player positions and states
         resetPlayer(man, manStartPos);
         resetPlayer(pig, pigStartPos);
-    
+
         // Unlock transitions after a short delay
         StartCoroutine(UnlockRoundTransition());
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void ShowRoundIntroServerRpc(bool boolean, int round) {
-		showRoundIntro(boolean, round);
-        ShowRoundIntroClientRpc(boolean, round);
-	}
-
-	[ClientRpc]
-	void ShowRoundIntroClientRpc(bool boolean, int round) {
-		if (IsServer) return;
+    void ShowRoundIntroServerRpc(bool boolean, int round)
+    {
         showRoundIntro(boolean, round);
-	}
+        ShowRoundIntroClientRpc(boolean, round);
+    }
 
-    void showRoundIntro(bool boolean, int round) {
+    [ClientRpc]
+    void ShowRoundIntroClientRpc(bool boolean, int round)
+    {
+        if (IsServer) return;
+        showRoundIntro(boolean, round);
+    }
+
+    void showRoundIntro(bool boolean, int round)
+    {
         if (boolean)
             updRoundNumRef(round);
         roundIntroRef.SetActive(boolean);
-	}
+    }
 
-    private void updRoundNumRef(int round) {
+    private void updRoundNumRef(int round)
+    {
         SpriteRenderer renderer = roundNumRef.GetComponent<SpriteRenderer>();
         renderer.sprite = roundNumImg[round - 1];
     }
 
-    private IEnumerator roundIntroDelay() {
+    private IEnumerator roundIntroDelay()
+    {
         yield return new WaitForSeconds(4f);
         ShowRoundIntroServerRpc(false, 0);
         pig.StartMovementServerRpc();
@@ -163,11 +174,12 @@ public class GameManager : NetworkBehaviour
         isRoundTransitioning = false;
     }
 
-    public void handleCollision() {
+    public void handleCollision()
+    {
 
         pig.StopMovementServerRpc();
         man.StopMovementServerRpc();
-        
+
         // Start the coroutine to handle the delay before starting a  new round or ending a game
         StartCoroutine(HandleCollisionWithDelay());
 
@@ -175,56 +187,59 @@ public class GameManager : NetworkBehaviour
 
     // Coroutine to handle the 2-second delay before starting a new round to show dead states
     private IEnumerator HandleCollisionWithDelay()
-    {   
+    {
         // Delay until new round
         yield return new WaitForSeconds(2f);
 
-        if (pig.lives > 0 && man.lives > 0) 
+        if (pig.lives > 0 && man.lives > 0)
             startNewRound(); // Call startNewRound after the delay
 
         // End game if one of them has lost of their lives
-        else 
+        else
             endGame();
 
     }
 
-public void endGame()
-{   
-    clearWalls();
-
-    if (IsServer)
+    public void endGame()
     {
-        // Determine results and send to clients
-        ResultType resultTypeForPig = pig.lives > 0 ? ResultType.Win : (man.lives > 0 ? ResultType.Lose : ResultType.Draw);
-        ResultType resultTypeForMan = man.lives > 0 ? ResultType.Win : (pig.lives > 0 ? ResultType.Lose : ResultType.Draw);
+        clearWalls();
 
-        // Notify clients
-        DisplayResultClientRpc(resultTypeForPig, resultTypeForMan);
+        if (IsServer)
+        {
+            // Determine results and send to clients
+            ResultType resultTypeForPig = pig.lives > 0 ? ResultType.Win : (man.lives > 0 ? ResultType.Lose : ResultType.Draw);
+            ResultType resultTypeForMan = man.lives > 0 ? ResultType.Win : (pig.lives > 0 ? ResultType.Lose : ResultType.Draw);
 
-        // Handle result display for the server if it is also a player
-        DisplayResultServerRpc(resultTypeForPig, resultTypeForMan);
+            // Notify clients
+            DisplayResultClientRpc(resultTypeForPig, resultTypeForMan);
+
+            // Handle result display for the server if it is also a player
+            DisplayResultServerRpc(resultTypeForPig, resultTypeForMan);
+        }
     }
-}
 
-[ClientRpc]
-private void DisplayResultClientRpc(ResultType pigResult, ResultType manResult) {
-    if (IsServer) return;
-    displayResult(pigResult, manResult);
-}
+    [ClientRpc]
+    private void DisplayResultClientRpc(ResultType pigResult, ResultType manResult)
+    {
+        if (IsServer) return;
+        displayResult(pigResult, manResult);
+    }
 
-[ServerRpc(RequireOwnership = false)]
-private void DisplayResultServerRpc(ResultType pigResult, ResultType manResult) {
-    displayResult(pigResult, manResult);
-    DisplayResultClientRpc(pigResult, manResult);
-}
+    [ServerRpc(RequireOwnership = false)]
+    private void DisplayResultServerRpc(ResultType pigResult, ResultType manResult)
+    {
+        displayResult(pigResult, manResult);
+        DisplayResultClientRpc(pigResult, manResult);
+    }
 
-void displayResult(ResultType pigResult, ResultType manResult) {
-    if (NetworkManager.Singleton.LocalClientId == pig.OwnerClientId)
-        ShowResultUI(pigResult, pig.sprite);
+    void displayResult(ResultType pigResult, ResultType manResult)
+    {
+        if (NetworkManager.Singleton.LocalClientId == pig.OwnerClientId)
+            ShowResultUI(pigResult, pig.sprite);
 
-    else if (NetworkManager.Singleton.LocalClientId == man.OwnerClientId)
-        ShowResultUI(manResult, man.sprite);
-}
+        else if (NetworkManager.Singleton.LocalClientId == man.OwnerClientId)
+            ShowResultUI(manResult, man.sprite);
+    }
 
     // Show the result UI with the appropriate type and sprite
     void ShowResultUI(ResultType result, Sprite playerSprite)
@@ -239,7 +254,7 @@ void displayResult(ResultType pigResult, ResultType manResult) {
         if (result == ResultType.Win || result == ResultType.Lose)
             renderer.sprite = playerSprite;
 
-        else 
+        else
             renderer.sprite = null;
 
         // Hide the game objects for man and pig
@@ -259,16 +274,18 @@ void displayResult(ResultType pigResult, ResultType manResult) {
         }
     }
 
-    void clearWalls() {
-		// Find and destroy all wall objects
+    void clearWalls()
+    {
+        // Find and destroy all wall objects
         GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
         foreach (GameObject wall in walls)
         {
             Destroy(wall);
         }
-	}
+    }
 
-    void showResult(bool boolean) {
+    void showResult(bool boolean)
+    {
         resultCanvasRef.SetActive(boolean);
     }
 
