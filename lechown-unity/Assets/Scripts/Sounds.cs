@@ -15,6 +15,7 @@ public class Sounds : MonoBehaviour
     public AudioClip Win;
     public AudioClip Lose;
     public AudioClip play;
+    public AudioClip countDown;
 
     public AudioSource sfxSource;
     void Awake()
@@ -131,6 +132,12 @@ public class Sounds : MonoBehaviour
     public void PlayPlay()
     {
         sfxSource.clip = play;
+        sfxSource.Play();
+    }
+
+    public void PlayCountdown()
+    {
+        sfxSource.clip = countDown;
         sfxSource.Play();
     }
 }
